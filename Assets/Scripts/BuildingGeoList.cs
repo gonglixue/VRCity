@@ -1,20 +1,23 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.IO;
-public class BuildingGeoList : MonoBehaviour {
+public class BuildingGeoList : MonoBehaviour
+{
     public List<buildingInfo> buildingList = new List<buildingInfo>();
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         loadXML();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	    
-	}
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 
 
 
@@ -30,11 +33,6 @@ public class BuildingGeoList : MonoBehaviour {
         nsMgr.AddNamespace("ns", "http://www.opengis.net/kml/2.2");
 
         XmlNode xdn = xml.DocumentElement;
-        XmlNode testhref = xdn.SelectSingleNode("//ns:href",nsMgr);
-        Debug.Log("test:---");
-        Debug.Log(testhref.InnerText);
-
-
 
         //XmlNodeList placeMark = xml.GetElementsByTagName("kml:Placemark");
         XmlNodeList placeMark = xdn.SelectNodes("//ns:Placemark", nsMgr);
@@ -42,15 +40,21 @@ public class BuildingGeoList : MonoBehaviour {
         int length = placeMark.Count;
 
         //foreach(XmlNode place in placeMark)
-        for(int i=0;i<length;i++)
+        for (int i = 0; i < length; i++)
         {
             XmlNode place = placeMark[i];
-            string name = place.SelectSingleNode("//ns:name", nsMgr).InnerText;
-            double latitude = double.Parse(place.SelectSingleNode("//ns:latitude",nsMgr).InnerText);
-            double longitude = double.Parse(place.SelectSingleNode("//ns:longitude", nsMgr).InnerText);
-            double heading = double.Parse(place.SelectSingleNode("//ns:heading", nsMgr).InnerText);
-            string modelHref = place.SelectSingleNode("//ns:href", nsMgr).InnerText;
-            Debug.Log(place.InnerText);
+            //Debug.Log(place.InnerXml);
+
+            //XmlNode test = place.SelectSingleNode("ns:name", nsMgr);
+            //Debug.Log(test.InnerText);
+            //Debug.Log("------");
+
+            string name = place.SelectSingleNode(".//ns:name", nsMgr).InnerText;
+            double latitude = double.Parse(place.SelectSingleNode(".//ns:latitude", nsMgr).InnerText);
+            double longitude = double.Parse(place.SelectSingleNode(".//ns:longitude", nsMgr).InnerText);
+            double heading = double.Parse(place.SelectSingleNode(".//ns:heading", nsMgr).InnerText);
+            string modelHref = place.SelectSingleNode(".//ns:href", nsMgr).InnerText;
+            Debug.Log(name);
 
             buildingInfo building = new buildingInfo(latitude, longitude, heading, name, modelHref);
             buildingList.Add(building);
@@ -62,7 +66,6 @@ public class BuildingGeoList : MonoBehaviour {
         XmlNodeList headingList = xml.GetElementsByTagName("kml:heading");
         XmlNodeList nameList = xml.GetElementsByTagName("kml:name");
         XmlNodeList modelHrefList = xml.GetElementsByTagName("kml:href");
-
         for(int i=0;i<length;i++)
         {
             
@@ -71,10 +74,8 @@ public class BuildingGeoList : MonoBehaviour {
             double heading = double.Parse(headingList[i].InnerText);
             string name = nameList[i].InnerText;
             string modelHref = modelHrefList[i].InnerText;
-
             buildingInfo building = new buildingInfo(latitude,longitude,heading,name, modelHref);
             Debug.Log(building.name);
-
             buildingList.Add(building);
         }
         */
@@ -89,7 +90,7 @@ public struct buildingInfo
     public string name;
     public string modelHref;
 
-    public buildingInfo(double _latitude, double _longitude,  double _heading, string _name, string _href)
+    public buildingInfo(double _latitude, double _longitude, double _heading, string _name, string _href)
     {
         latitude = _latitude;
         longitude = _longitude;
