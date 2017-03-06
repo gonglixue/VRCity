@@ -191,7 +191,8 @@ public class BuildingGeoList : MonoBehaviour
             path = path.Replace('\\', '/');
             //Debug.Log(position);
             GameObject buildingInstance = Instantiate(Resources.Load(path, typeof(GameObject)), position, rotate, tile.transform) as GameObject;
-            
+            buildingInstance.AddComponent<BuildingIntro>();
+            buildingInstance.GetComponent<BuildingIntro>().setBuildingInfo(buildingItem.name, buildingItem.latitude, buildingItem.longitude);
         }
 
         _tileCount++;
