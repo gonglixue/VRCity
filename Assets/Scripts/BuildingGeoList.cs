@@ -191,8 +191,11 @@ public class BuildingGeoList : MonoBehaviour
             path = path.Replace('\\', '/');
             //Debug.Log(position);
             GameObject buildingInstance = Instantiate(Resources.Load(path, typeof(GameObject)), position, rotate, tile.transform) as GameObject;
-            buildingInstance.AddComponent<BuildingIntro>();
+
+            // 为创建的GameObject添加组件
+            buildingInstance.AddComponent<BuildingIntro>();  // 添加脚本
             buildingInstance.GetComponent<BuildingIntro>().setBuildingInfo(buildingItem.name, buildingItem.latitude, buildingItem.longitude);
+            buildingInstance.AddComponent<MeshCollider>().convex = true;
         }
 
         _tileCount++;
@@ -213,6 +216,7 @@ public class BuildingGeoList : MonoBehaviour
     {
         _root = new GameObject("Building-Root");
         _root.transform.localScale = Vector3.one * (float)_scaleFactor;
+        
     }
 
     // 计算数据库tileSize / MapboxTileSize
