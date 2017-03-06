@@ -7,10 +7,13 @@ public class BuildingGeoList : MonoBehaviour
 {
     public List<buildingInfo> buildingList = new List<buildingInfo>();
 
-    // Use this for initialization
-    void Start()
+    void Awake()
     {
         loadXML();
+    }
+    void Start()
+    {
+        //loadXML();
     }
 
     // Update is called once per frame

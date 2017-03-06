@@ -75,9 +75,11 @@ public class InstanceBuilding : MonoBehaviour {
             double deltay = v2.y - _referenceTileRect.center.y;
 
             Vector3 position = new Vector3((float)(deltax * _worldScaleFactor), 0, (float)(deltay * _worldScaleFactor));
-            Quaternion rotate = Quaternion.AngleAxis(-89.8f, Vector3.right);
-            
-            GameObject buildingInstance = Instantiate(Resources.Load(buildingItem.modelHref, typeof(GameObject)), position, rotate, _root.transform) as GameObject;
+            Quaternion rotate = Quaternion.AngleAxis(-89.8f, Vector3.right)*(Quaternion.AngleAxis(180,Vector3.forward));
+
+            string path = buildingItem.modelHref.Split('.')[0];
+            Debug.Log("resource path:" + path);
+            GameObject buildingInstance = Instantiate(Resources.Load(path, typeof(GameObject)), position, rotate, _root.transform) as GameObject;
 
         }
     }
