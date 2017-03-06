@@ -13,10 +13,10 @@ namespace Mapbox.MeshGeneration
         public float TileSize = 100;
         public int zoom = 16;
         
-        public double north = 52.53463979050505;  // lat
-        public double south = 52.5335431766582;
-        public double west = 13.398223088795774;  // lon
-        public double east = 13.396366385489324;
+        public double north = 52.542316087433;  // lat
+        public double south = 52.54121947358615;
+        public double west = 13.396366385489324;  // lon
+        public double east = 13.398223088795774;
         public double worldScaleFactor;
 
         [SerializeField]
@@ -60,8 +60,8 @@ namespace Mapbox.MeshGeneration
             rotate = Quaternion.AngleAxis(-89.8f, Vector3.right);
             //rotate = Quaternion.AngleAxis(-89.98f, Vector3.right) * Quaternion.AngleAxis((float)heading, Vector3.forward);
             //rotate = rotate * Quaternion.AngleAxis()
-            _building = (GameObject)Instantiate(prefab_ade, position,rotate);
-            _building.transform.localScale = Vector3.one * scaleFactor;
+            _building = (GameObject)Instantiate(prefab_ade, position,rotate,_root.transform);
+            //_building.transform.localScale = Vector3.one * scaleFactor;
 
 
         }
