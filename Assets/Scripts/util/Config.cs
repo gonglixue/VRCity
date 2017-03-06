@@ -6,4 +6,9 @@ public static class Config{
     public static double latitude = 52.5387557;
     public static int zoom = 16;
     public static float tileSize = 100;
+
+    public static void setZoom(int newZoom)
+    {
+        zoom = newZoom;
+    }
 }

@@ -30,7 +30,7 @@ public class InstanceBuilding : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        _buildings = GeoListController.GetComponent<BuildingGeoList>().buildingList;
+        _buildings = GeoListController.GetComponent<BuildingGeoList>().buildingList[0];
 
         _referenceTileMeter = Mapbox.Conversions.LatLonToMeters(Config.latitude, Config.longitude);
         _tms = Mapbox.Conversions.MetersToTile(_referenceTileMeter, Config.zoom);
@@ -38,7 +38,7 @@ public class InstanceBuilding : MonoBehaviour {
 
         _scaleFator = calTileScaleFactor(_north, _south, _west, _east, _referenceTileRect);
         _worldScaleFactor = Config.tileSize / _referenceTileRect.width;
-
+        Debug.Log("instance.cs:" + _scaleFator + "," + _worldScaleFactor);
         InitRoot();
         CreatBuilding();
 	}
@@ -70,7 +70,7 @@ public class InstanceBuilding : MonoBehaviour {
         foreach (buildingInfo buildingItem in _buildings)
         {
             Vector2 v2 = Mapbox.Conversions.LatLonToMeters(buildingItem.latitude, buildingItem.longitude);  // 该建筑的经纬度转墨卡托坐标
-            // 建筑物距离参考tile重点的墨卡托距离
+            // 建筑物距离参考tile中点的墨卡托距离
             double deltax = v2.x - _referenceTileRect.center.x;
             double deltay = v2.y - _referenceTileRect.center.y;
 
@@ -80,7 +80,7 @@ public class InstanceBuilding : MonoBehaviour {
             string path = buildingItem.modelHref.Split('.')[0];
             path = path.Replace('\\', '/');
             //Debug.Log("resource path:" + path);
-
+            Debug.Log(position);
             GameObject buildingInstance = Instantiate(Resources.Load(path, typeof(GameObject)), position, rotate, _root.transform) as GameObject;
 
         }

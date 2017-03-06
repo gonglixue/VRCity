@@ -5,22 +5,42 @@ using System.Xml;
 using System.IO;
 public class BuildingGeoList : MonoBehaviour
 {
-    public List<buildingInfo> buildingList = new List<buildingInfo>();
+    public List<List<buildingInfo>> buildingList = new List<List<buildingInfo>>();
     public List<TileInfo> tileList = new List<TileInfo>();
+
+    // 参考原点tile
+    private Vector2 _referenceTileMeter;
+    private Vector2 _tms;
+    private Rect _referenceTileRect;
+
+    // temp
+    private double _north = 52.542316087433;  // lat
+    private double _south = 52.54121947358615;
+    private double _west = 13.396366385489324;  // lon
+    private double _east = 13.398223088795774;
+
+    private double _worldScaleFactor;   // 墨卡托坐标->unity坐标
+    private double _scaleFactor;        // 数据库tileSize / MapboxTileSize
+
+    private GameObject _root;           // 建筑物组父元素
+    private int _tileCount = 0;
 
     void Awake()
     {
-        loadKML();  // 加载tileList数据
-        for(int i=0;i<tileList.Count;i++)
-        {
-            loadTileKML(i);
-            // TODO: 每次循环就增加了一个tile信息，即可绘制该tile
-        }
+        InitReference();
+        InitRoot();
         
+        loadKML();  // 加载总的KML数据，解析得到TileList
+        //for (int i = 0; i < tileList.Count; i++)  // 循环每个tile
+        foreach(TileInfo tile in tileList)
+        {
+            loadTileKML(tile);  // 加载一个Tile的KML，解析得到buildingList[i],并绘制该tile
+        }
     }
+
     void Start()
     {
-        //loadXML();
+
     }
 
     // Update is called once per frame
@@ -33,6 +53,8 @@ public class BuildingGeoList : MonoBehaviour
 
     void loadTileKML()
     {
+        List<buildingInfo> buildingsOfATile = new List<buildingInfo>();
+
         XmlDocument xml = new XmlDocument();
         XmlReaderSettings set = new XmlReaderSettings();
         set.IgnoreComments = true;
@@ -63,18 +85,21 @@ public class BuildingGeoList : MonoBehaviour
             Debug.Log(name);
 
             buildingInfo building = new buildingInfo(latitude, longitude, heading, name, modelHref);
-            buildingList.Add(building);
+            buildingsOfATile.Add(building);
         }
 
+        buildingList.Add(buildingsOfATile);
     }
 
-    void loadTileKML(int i)
+    void loadTileKML(TileInfo singleTile)
     {
-        TileInfo singleTile = tileList[i];
+        List<buildingInfo> buildingsOfATile = new List<buildingInfo>();
+
+        //TileInfo singleTile = tileList[i];
         string tileColladaKmlPath = "\\" + singleTile.href;
         int lastFolderIndex = singleTile.href.LastIndexOf('\\');
         string singleTilePathPrefix = singleTile.href.Substring(0,lastFolderIndex);
-        Debug.Log(singleTilePathPrefix);
+        //Debug.Log(singleTilePathPrefix);
 
         XmlDocument xml = new XmlDocument();
         XmlReaderSettings set = new XmlReaderSettings();
@@ -103,8 +128,12 @@ public class BuildingGeoList : MonoBehaviour
             //Debug.Log(modelHref);
 
             buildingInfo building = new buildingInfo(latitude, longitude, heading, name, modelHref);
-            buildingList.Add(building);
+            buildingsOfATile.Add(building);
         }
+
+        // TODO: 每次循环就增加了一个tile信息，即可绘制该tile
+        drawATile(buildingsOfATile);
+        buildingList.Add(buildingsOfATile);
     }
 
     void loadKML()
@@ -141,6 +170,57 @@ public class BuildingGeoList : MonoBehaviour
             TileInfo tile = new TileInfo(name, north, south, east, west, href);
             tileList.Add(tile);
         }
+    }
+
+    void drawATile(List<buildingInfo> buildingsOfAtile)
+    {
+        GameObject tile = new GameObject("Tile-" + _tileCount);
+        tile.transform.localScale = _root.transform.localScale;  // !!!
+        tile.transform.SetParent(_root.transform);
+
+        foreach(buildingInfo buildingItem in buildingsOfAtile)
+        {
+            Vector2 v2 = Mapbox.Conversions.LatLonToMeters(buildingItem.latitude, buildingItem.longitude);
+            // 建筑物距离参考tile中点的墨卡托距离
+            double deltax = v2.x - _referenceTileRect.center.x;
+            double deltay = v2.y - _referenceTileRect.center.y;
+
+            Vector3 position = new Vector3((float)(deltax * _worldScaleFactor), 0, (float)(deltay * _worldScaleFactor));
+            Quaternion rotate = Quaternion.AngleAxis(-89.8f, Vector3.right) * (Quaternion.AngleAxis(180, Vector3.forward));
+            string path = buildingItem.modelHref.Split('.')[0];
+            path = path.Replace('\\', '/');
+            //Debug.Log(position);
+            GameObject buildingInstance = Instantiate(Resources.Load(path, typeof(GameObject)), position, rotate, tile.transform) as GameObject;
+            
+        }
+
+        _tileCount++;
+    }
+
+    void InitReference()
+    {
+        _referenceTileMeter = Mapbox.Conversions.LatLonToMeters(Config.latitude, Config.longitude);     // 给定参考原点的经纬度对应的墨卡托坐标
+        _tms = Mapbox.Conversions.MetersToTile(_referenceTileMeter, Config.zoom);                       // 给定参考原点所在tile的ID
+        _referenceTileRect = Mapbox.Conversions.TileBounds(_tms, Config.zoom);                          // 参考tile在墨卡托坐标下的Rect
+
+        _scaleFactor = calTileScaleFactor(_north, _south, _west, _east, _referenceTileRect);
+        _worldScaleFactor = Config.tileSize / _referenceTileRect.width;
+        Debug.Log("buildinggeo.cs:" + _scaleFactor + "," + _worldScaleFactor);
+    }
+
+    void InitRoot()
+    {
+        _root = new GameObject("Building-Root");
+        _root.transform.localScale = Vector3.one * (float)_scaleFactor;
+    }
+
+    // 计算数据库tileSize / MapboxTileSize
+    double calTileScaleFactor(double north, double south, double west, double east, Rect referenceTileRect)
+    {
+        var north_east = Mapbox.Conversions.LatLonToMeters(north, east);
+        var south_west = Mapbox.Conversions.LatLonToMeters(south, west);
+        double factor = (north_east.y - south_west.y) / referenceTileRect.width;
+        return factor;
     }
 }
 

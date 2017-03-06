@@ -20,7 +20,7 @@ namespace Mapbox.MeshGeneration
 
 		[Geocode]
 		public string LatLng;
-		public int Zoom;
+		public int Zoom = Config.zoom;
 		public Vector4 Range;
 
 		private GameObject _root;
@@ -88,7 +88,7 @@ namespace Mapbox.MeshGeneration
 					tile.Zoom = zoom;
 					tile.RelativeScale = Conversions.GetTileScaleInMeters(0, Zoom) / Conversions.GetTileScaleInMeters((float)lat, Zoom);
 					tile.TileCoordinate = new Vector2(i, j);
-					tile.Rect = Conversions.TileBounds(tile.TileCoordinate, zoom);
+					tile.Rect = Conversions.TileBounds(tile.TileCoordinate, zoom);  // Ä«¿¨ÍÐ×ø±ê
 					tile.transform.position = new Vector3(tile.Rect.center.x - ReferenceTileRect.center.x, 0, tile.Rect.center.y - ReferenceTileRect.center.y);
 					tile.transform.SetParent(_root.transform, false);
 					MapVisualization.ShowTile(tile);
@@ -124,5 +124,7 @@ namespace Mapbox.MeshGeneration
 				MapVisualization.ShowTile(tile);
 			}
 		}
+
+        //public void 
 	}
 }
