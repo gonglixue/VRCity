@@ -78,7 +78,9 @@ public class InstanceBuilding : MonoBehaviour {
             Quaternion rotate = Quaternion.AngleAxis(-89.8f, Vector3.right)*(Quaternion.AngleAxis(180,Vector3.forward));
 
             string path = buildingItem.modelHref.Split('.')[0];
-            Debug.Log("resource path:" + path);
+            path = path.Replace('\\', '/');
+            //Debug.Log("resource path:" + path);
+
             GameObject buildingInstance = Instantiate(Resources.Load(path, typeof(GameObject)), position, rotate, _root.transform) as GameObject;
 
         }
