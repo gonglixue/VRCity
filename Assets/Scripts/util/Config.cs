@@ -7,6 +7,8 @@ public static class Config{
     public static int zoom = 16;
     public static float tileSize = 100;
 
+    public static Vector3 myPos = new Vector3(5, 5, 5);
+
     public static void setZoom(int newZoom)
     {
         zoom = newZoom;

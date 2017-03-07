@@ -9,9 +9,9 @@ public class BuildingGeoList : MonoBehaviour
     public List<TileInfo> tileList = new List<TileInfo>();
 
     // 参考原点tile
-    private Vector2 _referenceTileMeter;
-    private Vector2 _tms;
-    private Rect _referenceTileRect;
+    static private Vector2 _referenceTileMeter;
+    static private Vector2 _tms;
+    static private Rect _referenceTileRect;
 
     // temp
     private double _north = 52.542316087433;  // lat
@@ -19,8 +19,8 @@ public class BuildingGeoList : MonoBehaviour
     private double _west = 13.396366385489324;  // lon
     private double _east = 13.398223088795774;
 
-    private double _worldScaleFactor;   // 墨卡托坐标->unity坐标
-    private double _scaleFactor;        // 数据库tileSize / MapboxTileSize
+    static private double _worldScaleFactor;   // 墨卡托坐标->unity坐标
+    static private double _scaleFactor;        // 数据库tileSize / MapboxTileSize
 
     private GameObject _root;           // 建筑物组父元素
     private int _tileCount = 0;
@@ -226,6 +226,15 @@ public class BuildingGeoList : MonoBehaviour
         var south_west = Mapbox.Conversions.LatLonToMeters(south, west);
         double factor = (north_east.y - south_west.y) / referenceTileRect.width;
         return factor;
+    }
+
+    static public Vector2 GetReferenceCenterInMeters()
+    {
+        return _referenceTileRect.center;
+    }
+    static public float GetWorldScaleFactor()
+    {
+        return (float)_worldScaleFactor;
     }
 }
 

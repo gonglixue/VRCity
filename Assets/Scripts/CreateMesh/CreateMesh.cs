@@ -2,7 +2,7 @@
 using System.Collections;
 [RequireComponent(typeof(MeshFilter),typeof(MeshRenderer))]
 public class CreateMesh : MonoBehaviour {
-    
+    // http://www.ceeger.com/forum/read.php?tid=20296
 
     public Vector3 point = Vector3.up;
     public int numberOfPoints = 10;

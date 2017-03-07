@@ -24,7 +24,7 @@ public class CameraController : MonoBehaviour {
         _fieldOfView = GetComponent<Camera>().fieldOfView;
         _height = transform.position.y;
         InitReference();
-        CalRange(_height, _fieldOfView);
+        //CalRange(_height, _fieldOfView);
     }
 
 	// Use this for initialization
