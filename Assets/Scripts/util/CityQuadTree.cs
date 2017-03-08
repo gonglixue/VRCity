@@ -97,7 +97,8 @@ public class CityQuadTree{
 
     public void Traversal(GameObject root)  // 遍历整棵树，为叶子节点创建Mesh实例,Mesh实例作为root的子元素
     {
-        if(!this.isLeaf)
+        //Debug.Log("depth " + this.currentDepth + " size:" + this.nodeBounds.width + "or:" + this.nodeSize);
+        if (!this.isLeaf)
         {
             foreach(CityQuadTree treeNode in this.childNodes)
             {
@@ -114,10 +115,10 @@ public class CityQuadTree{
     {
         Vector2 referenceO = BuildingGeoList.GetReferenceCenterInMeters();
 
-        Vector3 position = new Vector3(this.nodeCenter.x-referenceO.x,0,this.nodeCenter.y-referenceO.y);
+        Vector3 position = new Vector3(this.nodeCenter.x-referenceO.x, 0, this.nodeCenter.y-referenceO.y);
         GameObject leafPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
         leafPlane.transform.position = position;
-        leafPlane.transform.localScale = Vector3.one * this.nodeSize;  // 墨卡托坐标
+        leafPlane.transform.localScale = (new Vector3(1,0,1)) * this.nodeSize * 0.1f;  // 墨卡托坐标. 一个plan primitive本身的unity size是10*10
         leafPlane.transform.SetParent(root.transform);
     }
 

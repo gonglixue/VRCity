@@ -209,7 +209,8 @@ public class BuildingGeoList : MonoBehaviour
 
         _scaleFactor = calTileScaleFactor(_north, _south, _west, _east, _referenceTileRect);
         _worldScaleFactor = Config.tileSize / _referenceTileRect.width;
-        Debug.Log("buildinggeo.cs:" + _scaleFactor + "," + _worldScaleFactor);
+        Debug.Log("referenceTileRect width:" + _referenceTileRect.width);
+        Debug.Log("world scale factor: " + _worldScaleFactor);
     }
 
     void InitRoot()
@@ -235,6 +236,14 @@ public class BuildingGeoList : MonoBehaviour
     static public float GetWorldScaleFactor()
     {
         return (float)_worldScaleFactor;
+    }
+    static public float tileSizeInMeters()
+    {
+        return _referenceTileRect.width;
+    }
+    static public Vector2 GetRerenceLeftBottomInMeters()
+    {
+        return _referenceTileRect.position;
     }
 }
 
