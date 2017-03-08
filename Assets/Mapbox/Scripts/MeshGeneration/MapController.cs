@@ -95,8 +95,11 @@ namespace Mapbox.MeshGeneration
 					tile.transform.SetParent(_root.transform, false);
 					MapVisualization.ShowTile(tile);
 
-                    tileObject.AddComponent<TileIntro>().setTileInfo(new Vector2(i, j), tile.Rect, tile.Zoom);
-                    
+                    tileObject.AddComponent<TileIntro>().setTileInfo(new Vector2(i, j), tile.Rect, tile.Zoom, tile.RelativeScale);
+                    if(i==tms.x && j==tms.y) {
+                        tileObject.GetComponent<TileIntro>().setRefernceTile();
+                    }
+                    Config.tilesDic.Add(new Vector2(i, j), tileObject);
 				}
 			}
 

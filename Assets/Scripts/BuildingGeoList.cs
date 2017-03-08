@@ -245,6 +245,10 @@ public class BuildingGeoList : MonoBehaviour
     {
         return _referenceTileRect.position;
     }
+    static public Rect GetRerenceRect()
+    {
+        return _referenceTileRect;
+    }
 }
 
 public struct buildingInfo

@@ -20,6 +20,8 @@ namespace Mapbox.MeshGeneration.Data
             set
             {
                 _imageData = value;
+                // TODO: 获取到ImageData, 把ImageData添加给TileIntro
+                Config.AddImageDataForTile(TileCoordinate, value);
                 OnSatelliteDataChanged();
             }
         }
@@ -29,6 +31,8 @@ namespace Mapbox.MeshGeneration.Data
             set
             {
                 _heightData = value;
+                // TODO: 获取到HeightData, 把HeightData添加给TileIntro
+                Config.AddHeightDataForTile(TileCoordinate, value);
                 OnHeightDataChanged();
             }
         }
@@ -52,13 +56,15 @@ namespace Mapbox.MeshGeneration.Data
         public Rect Rect { get; set; }
 		public float RelativeScale { get; set;}
         
-        public float QueryHeightData(float x, float y)
+        public float QueryHeightData(float x, float y)  // 参数是纹理坐标
         {
             if(HeightData != null)
             {
-                return Conversions.GetRelativeHeightFromColor(HeightData.GetPixel(
+                float height = Conversions.GetRelativeHeightFromColor(HeightData.GetPixel(
                         (int)Mathf.Clamp((x * 256), 0, 255),
                         (int)Mathf.Clamp((y * 256), 0, 255)), RelativeScale);
+                
+                return height;
             }
 
             return 0;

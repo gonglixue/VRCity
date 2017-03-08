@@ -4,6 +4,8 @@ using System.Collections;
 public class TerrainController : MonoBehaviour {
     public Rect worldRect;  // 8*8 tile rect, 墨卡托坐标
     public CityQuadTree qTree;
+    public GameObject planeMeshPrefab;
+
     private int tileNum = 8;  // 现场景中每边tile数
     
 
@@ -17,8 +19,9 @@ public class TerrainController : MonoBehaviour {
         //terrainRoot.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor();
         // 构造
         qTree = new CityQuadTree(worldRect, 0, null);
-        qTree.SearchTarget(Mapbox.Conversions.LatLonToMeters(Config.latitude,Config.longitude));
-        qTree.Traversal(terrainRoot);
+        //qTree.SearchTarget(Mapbox.Conversions.LatLonToMeters(Config.latitude,Config.longitude));
+        qTree.SearchTarget(new Rect(BuildingGeoList.GetRerenceRect().x, BuildingGeoList.GetRerenceRect().y, BuildingGeoList.GetRerenceRect().width+100,BuildingGeoList.GetRerenceRect().height-100));
+        qTree.Traversal(terrainRoot,planeMeshPrefab);
         terrainRoot.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor();
 
     }

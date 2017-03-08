@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CityQuadTree{
     static int childCount = 4;
     static int maxNodeCount = 100;
     static int sideLength = 8;  // 一边有8个tiles
     static int maxDepth = 3; // log8
+    static int sampleCount = 40;
 
 
     private CityQuadTree nodeParent;
@@ -21,6 +23,8 @@ public class CityQuadTree{
     public Mesh aMesh;  
     public Texture2D aTexture;
     public Texture2D aHeightMap;
+
+    //public GameObject planeMeshPrefab;
 
     // 构造函数
     public CityQuadTree(float size, int depth, Vector2 center, CityQuadTree parent)
@@ -117,34 +121,61 @@ public class CityQuadTree{
     // 判断两矩形是否相交
     public bool TestRectInter(Rect r1, Rect r2)
     {
-        return r1.Overlaps(r2);
+        return r1.Overlaps(r2,true);
     }
 
-    public void Traversal(GameObject root)  // 遍历整棵树，为叶子节点创建Mesh实例,Mesh实例作为root的子元素
+    public void Traversal(GameObject root, GameObject planeMeshPrefab)  // 遍历整棵树，为叶子节点创建Mesh实例,Mesh实例作为root的子元素
     {
         //Debug.Log("depth " + this.currentDepth + " size:" + this.nodeBounds.width + "or:" + this.nodeSize);
         if (!this.isLeaf)
         {
             foreach(CityQuadTree treeNode in this.childNodes)
             {
-                treeNode.Traversal(root);
+                treeNode.Traversal(root, planeMeshPrefab);
             }
         }
         else
         {
-            this.CreateMesh(root);
+            this.CreateMesh(root, planeMeshPrefab);
         }
     }
 
-    private void CreateMesh(GameObject root)
+    private void CreateMesh(GameObject root, GameObject planeMeshPrefab)
     {
         Vector2 referenceO = BuildingGeoList.GetReferenceCenterInMeters();
 
         Vector3 position = new Vector3(this.nodeCenter.x-referenceO.x, 0, this.nodeCenter.y-referenceO.y);
-        GameObject leafPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        //GameObject leafPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        GameObject leafPlane = GameObject.Instantiate(planeMeshPrefab);
+        leafPlane.name = "depth-" + this.currentDepth;
         leafPlane.transform.position = position;
         leafPlane.transform.localScale = (new Vector3(1,0,1)) * this.nodeSize * 0.1f;  // 墨卡托坐标. 一个plan primitive本身的unity size是10*10
         leafPlane.transform.SetParent(root.transform);
+        leafPlane.AddComponent<MeshCollider>().sharedMesh = leafPlane.GetComponent<MeshFilter>().mesh;
+    }
+
+    public CityQuadTree SortTileIntoLeaf(Rect tile)
+    {
+        if(!TestRectInter(this.nodeBounds, tile))
+        {
+            Debug.Log("ERROR THIS QUADTREE NODE DOES NOT CONTAIN THE TILE RECT");
+            return null;
+        }
+        if(!this.isLeaf)
+        {
+            Vector2 tileCenter = tile.center;
+            int index = (tileCenter.x < this.nodeCenter.x ? 0 : 1) + (tileCenter.y < this.nodeCenter.y ? 0 : 2);
+            this.childNodes[index].SortTileIntoLeaf(tile);
+        }
+        else
+        {
+            // 把该Rect tile分配到某个叶节点，把Texture等渲染信息加入该叶节点
+            // TODO: 把Tile的HighMap与Texture添加进该节点
+            // ...
+            return this;
+        }
+
+        return null;
     }
 
     // Use this for initialization
