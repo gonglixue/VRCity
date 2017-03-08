@@ -83,7 +83,9 @@ namespace Mapbox.MeshGeneration
 			{
 				for (int j = (int)(tms.y - frame.y); j <= (tms.y + frame.w); j++)
 				{
-					var tile = new GameObject("Tile - " + i + " | " + j).AddComponent<UnityTile>();
+                    GameObject tileObject = new GameObject("Tile - " + i + " | " + j);
+					var tile = tileObject.AddComponent<UnityTile>();
+                    
 					_tiles.Add(new Vector2(i, j), tile);
 					tile.Zoom = zoom;
 					tile.RelativeScale = Conversions.GetTileScaleInMeters(0, Zoom) / Conversions.GetTileScaleInMeters((float)lat, Zoom);
@@ -92,6 +94,9 @@ namespace Mapbox.MeshGeneration
 					tile.transform.position = new Vector3(tile.Rect.center.x - ReferenceTileRect.center.x, 0, tile.Rect.center.y - ReferenceTileRect.center.y);
 					tile.transform.SetParent(_root.transform, false);
 					MapVisualization.ShowTile(tile);
+
+                    tileObject.AddComponent<TileIntro>().setTileInfo(new Vector2(i, j), tile.Rect, tile.Zoom);
+                    
 				}
 			}
 

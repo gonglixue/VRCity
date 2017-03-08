@@ -95,6 +95,31 @@ public class CityQuadTree{
         }
     }
 
+    public void SearchTarget(Rect myPos)  // 参数为墨卡托坐标下的一个Rect
+    {
+        if(this.currentDepth < CityQuadTree.maxDepth)
+        {
+            this.GenerateChildNodes();
+            foreach(CityQuadTree child in this.childNodes)
+            {
+                if(TestRectInter(child.nodeBounds,myPos))
+                {
+                    child.SearchTarget(myPos);
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("search operation reaches a leaf");
+        }
+    }
+
+    // 判断两矩形是否相交
+    public bool TestRectInter(Rect r1, Rect r2)
+    {
+        return r1.Overlaps(r2);
+    }
+
     public void Traversal(GameObject root)  // 遍历整棵树，为叶子节点创建Mesh实例,Mesh实例作为root的子元素
     {
         //Debug.Log("depth " + this.currentDepth + " size:" + this.nodeBounds.width + "or:" + this.nodeSize);
