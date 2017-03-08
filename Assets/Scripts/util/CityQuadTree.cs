@@ -23,6 +23,7 @@ public class CityQuadTree{
     public Mesh aMesh;  
     public Texture2D aTexture;
     public Texture2D aHeightMap;
+    private GameObject LODTile;
 
     //public GameObject planeMeshPrefab;
 
@@ -34,6 +35,7 @@ public class CityQuadTree{
         this.nodeCenter = center;
         this.childNodes = new CityQuadTree[4];
         this.isLeaf = true;
+        this.LODTile = null;
         if (parent != null)
             this.nodeParent = parent;
         // else is root
@@ -47,6 +49,7 @@ public class CityQuadTree{
         this.currentDepth = depth;
         this.childNodes = new CityQuadTree[4];
         this.isLeaf = true;
+        this.LODTile = null;
         if (parent != null)
             this.nodeParent = parent;
 
@@ -110,11 +113,74 @@ public class CityQuadTree{
                 {
                     child.SearchTarget(myPos);
                 }
+                else
+                {
+                    // TODO: 不相交的节点是叶子节点(default)， 为子节点child创建GameObject，清除原来的GameObject;
+                    // ...
+                }
             }
         }
         else
         {
             Debug.Log("search operation reaches a leaf");
+        }
+    }
+
+    public void InitSearchTarget(Rect myPos, GameObject root, GameObject planeMeshPrefab)
+    {
+        if(this.currentDepth < CityQuadTree.maxDepth)
+        {
+            this.GenerateChildNodes();
+            foreach(CityQuadTree child in this.childNodes)
+            {
+                if (TestRectInter(child.nodeBounds, myPos))  // 相交
+                {
+                    child.InitSearchTarget(myPos, root, planeMeshPrefab);
+                }
+                else  // 不相交,直接作为叶子节点处理
+                {
+                    child.AddLODTile(root, planeMeshPrefab);
+                    //child.DestroyGameObject();
+                    child.isLeaf = true;                   
+                }
+            }
+        }
+        else   //达到最大深度不再细分，当前节点作为叶子节点处理
+        {
+            this.AddLODTile(root, planeMeshPrefab);
+            this.isLeaf = true;
+        }
+    }
+
+    public void UpdateSearchTarget(Rect myPos, GameObject root, GameObject planeMeshPrefab)
+    {
+        if (this.currentDepth < CityQuadTree.maxDepth)
+        {
+            //this.GenerateChildNodes();
+            foreach (CityQuadTree child in this.childNodes)
+            {
+                if (TestRectInter(child.nodeBounds, myPos))  // 相交
+                {
+                    child.UpdateSearchTarget(myPos, root, planeMeshPrefab);
+                }
+                else  // 不相交
+                {
+                    // TODO: 不相交的节点是叶子节点(default), 为子节点child创建GameObject, 创建完成后Destroy child下所有leaf原来的GameObject
+                    // 如果原来就是leaf，那么无需做更新??????
+                    if (child.isLeaf)
+                    {
+                        // do nothing
+                    }
+                    else
+                    {
+                        child.AddLODTile(root, planeMeshPrefab);
+                        child.DestroyGameObject();
+                        child.isLeaf = true;
+                    }
+
+
+                }
+            }
         }
     }
 
@@ -152,6 +218,38 @@ public class CityQuadTree{
         leafPlane.transform.localScale = (new Vector3(1,0,1)) * this.nodeSize * 0.1f;  // 墨卡托坐标. 一个plan primitive本身的unity size是10*10
         leafPlane.transform.SetParent(root.transform);
         leafPlane.AddComponent<MeshCollider>().sharedMesh = leafPlane.GetComponent<MeshFilter>().mesh;
+    }
+
+    private void AddLODTile(GameObject root, GameObject planeMeshPrefab)
+    {
+        this.LODTile = GameObject.Instantiate(planeMeshPrefab);
+
+        Vector2 reference0 = BuildingGeoList.GetReferenceCenterInMeters();
+        Vector3 position = new Vector3(this.nodeCenter.x - reference0.x, 0, this.nodeCenter.y - reference0.y);
+        this.LODTile.name = "depth-" + this.currentDepth;
+        this.LODTile.transform.position = position;
+        this.LODTile.transform.localScale = (new Vector3(1, 0, 1)) * this.nodeSize * 0.1f;
+        this.LODTile.transform.SetParent(root.transform);
+        this.LODTile.AddComponent<MeshCollider>().sharedMesh = this.LODTile.GetComponent<MeshFilter>().mesh;
+    }
+
+    private void DestroyGameObject()
+    {
+        foreach(CityQuadTree child in this.childNodes)
+        {
+            if(child.isLeaf)//如果是叶子节点，那么就Destroy它的GameObject
+            {
+                if(child.LODTile != null)
+                {
+                    GameObject.Destroy(child.LODTile);
+                }
+            }
+            else
+            {
+                child.DestroyGameObject();
+            }
+        }
+        
     }
 
     public CityQuadTree SortTileIntoLeaf(Rect tile)

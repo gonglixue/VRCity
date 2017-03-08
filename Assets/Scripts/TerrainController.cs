@@ -20,8 +20,9 @@ public class TerrainController : MonoBehaviour {
         // 构造
         qTree = new CityQuadTree(worldRect, 0, null);
         //qTree.SearchTarget(Mapbox.Conversions.LatLonToMeters(Config.latitude,Config.longitude));
-        qTree.SearchTarget(new Rect(BuildingGeoList.GetRerenceRect().x, BuildingGeoList.GetRerenceRect().y, BuildingGeoList.GetRerenceRect().width+100,BuildingGeoList.GetRerenceRect().height-100));
-        qTree.Traversal(terrainRoot,planeMeshPrefab);
+        //qTree.SearchTarget(new Rect(BuildingGeoList.GetRerenceRect().x, BuildingGeoList.GetRerenceRect().y, BuildingGeoList.GetRerenceRect().width+100,BuildingGeoList.GetRerenceRect().height-100));
+        //qTree.Traversal(terrainRoot,planeMeshPrefab);
+        qTree.InitSearchTarget(new Rect(BuildingGeoList.GetRerenceRect().x, BuildingGeoList.GetRerenceRect().y, BuildingGeoList.GetRerenceRect().width + 100, BuildingGeoList.GetRerenceRect().height - 100), terrainRoot, planeMeshPrefab);
         terrainRoot.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor();
 
     }
@@ -39,6 +40,11 @@ public class TerrainController : MonoBehaviour {
         float worldRectY = worldCenter.y - tileSize * tileNum/2;
         worldRect = new Rect(worldRectX, worldRectY, tileSize * tileNum, tileSize * tileNum);
         
+    }
+
+    void UpDateTerrain()
+    {
+
     }
 
 }

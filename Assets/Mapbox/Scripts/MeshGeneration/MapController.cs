@@ -99,6 +99,7 @@ namespace Mapbox.MeshGeneration
                     if(i==tms.x && j==tms.y) {
                         tileObject.GetComponent<TileIntro>().setRefernceTile();
                     }
+                    tileObject.GetComponent<MeshRenderer>().enabled = false;
                     Config.tilesDic.Add(new Vector2(i, j), tileObject);
 				}
 			}
