@@ -156,20 +156,41 @@ public class CityQuadTree{
     {
         if (this.currentDepth < CityQuadTree.maxDepth)
         {
+            Debug.Log("update search target");
             //this.GenerateChildNodes();
             foreach (CityQuadTree child in this.childNodes)
             {
                 if (TestRectInter(child.nodeBounds, myPos))  // 相交
                 {
+                    if (child.isLeaf)
+                    {
+                        child.GenerateChildNodes();
+                        if (child.currentDepth == maxDepth - 1)
+                        {
+                            //当达到最深一层的时候，为child的每个child创建Mesh
+                            foreach (CityQuadTree grandchild in child.childNodes)
+                            {
+                                grandchild.AddLODTile(root, planeMeshPrefab);
+                            }
+                        }
+                    }
+                        
                     child.UpdateSearchTarget(myPos, root, planeMeshPrefab);
+                    // 完成重新剖分后，Destroy原来的Tile, myPos未改变的情况也适用
+                    if(child.LODTile != null && child.currentDepth!=maxDepth)
+                        GameObject.Destroy(child.LODTile);
                 }
                 else  // 不相交
                 {
                     // TODO: 不相交的节点是叶子节点(default), 为子节点child创建GameObject, 创建完成后Destroy child下所有leaf原来的GameObject
-                    // 如果原来就是leaf，那么无需做更新??????
-                    if (child.isLeaf)
+                    // 如果原来就是leaf且是不是新generate出来的（即它是叶子节点且原先就存在一个LODTile），那么无需做更新??????
+                    if (child.isLeaf && child.LODTile!=null)
                     {
                         // do nothing
+                    }
+                    else if(child.isLeaf && child.LODTile == null)  // 是新generate的节点
+                    {
+                        child.AddLODTile(root, planeMeshPrefab);
                     }
                     else
                     {
@@ -237,10 +258,13 @@ public class CityQuadTree{
     {
         foreach(CityQuadTree child in this.childNodes)
         {
+            if (child == null)
+                return;
             if(child.isLeaf)//如果是叶子节点，那么就Destroy它的GameObject
             {
                 if(child.LODTile != null)
                 {
+                    Debug.Log("destroy");
                     GameObject.Destroy(child.LODTile);
                 }
             }

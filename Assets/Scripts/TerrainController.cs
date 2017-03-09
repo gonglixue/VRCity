@@ -29,7 +29,11 @@ public class TerrainController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("update quadtree");
+            UpDateTerrain();
+        }
 	}
 
     void InitWorldRect()
@@ -44,7 +48,10 @@ public class TerrainController : MonoBehaviour {
 
     void UpDateTerrain()
     {
-
+        GameObject terrainRoot2 = new GameObject("terrainRoot2");
+        //qTree.UpdateSearchTarget(new Rect(1487770, 6899512, 611.5f, -611.5f), terrainRoot2, planeMeshPrefab);
+        qTree.UpdateSearchTarget(new Rect(BuildingGeoList.GetRerenceRect().x, BuildingGeoList.GetRerenceRect().y, BuildingGeoList.GetRerenceRect().width + 100, BuildingGeoList.GetRerenceRect().height - 100), terrainRoot2, planeMeshPrefab);
+        terrainRoot2.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor();
     }
 
 }
