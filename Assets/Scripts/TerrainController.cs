@@ -30,9 +30,11 @@ public class TerrainController : MonoBehaviour {
         InitWorldRect();
         terrainRoot = new GameObject("terrain-root");
         terrainRoot.transform.position = new Vector3(0, 0, 0);
+        terrainRoot.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor();
+
         qTree = new CityQuadTree(worldRect, 0, null);
         qTree.InitSearchTarget(new Rect(BuildingGeoList.GetRerenceRect().x, BuildingGeoList.GetRerenceRect().y, BuildingGeoList.GetRerenceRect().width + 100, BuildingGeoList.GetRerenceRect().height - 100), terrainRoot, planeMeshPrefab);
-        terrainRoot.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor();
+        
 
     }
 
@@ -48,10 +50,16 @@ public class TerrainController : MonoBehaviour {
 
     public void UpDateTerrain()
     {
-        GameObject terrainRoot2 = new GameObject("terrainRoot2");
-        qTree.UpdateSearchTarget(new Rect(1487770, 6899512, 611.5f, -611.5f), terrainRoot2, planeMeshPrefab);
-        //qTree.UpdateSearchTarget(new Rect(BuildingGeoList.GetRerenceRect().x, BuildingGeoList.GetRerenceRect().y, BuildingGeoList.GetRerenceRect().width + 100, BuildingGeoList.GetRerenceRect().height - 100), terrainRoot2, planeMeshPrefab);
-        terrainRoot2.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor();
+        //GameObject terrainRoot2 = new GameObject("terrainRoot2");
+        //qTree.UpdateSearchTarget(new Rect(1487770, 6899512, 611.5f, 611.5f), terrainRoot, planeMeshPrefab);
+        qTree.UpdateSearchTarget(new Rect(1487770, 6899512, 611.5f, 611.5f), terrainRoot, planeMeshPrefab);
+        //terrainRoot.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor();
+    }
+
+    public void UpdateTerrain(Rect newRect)
+    {
+        qTree.UpdateSearchTarget(newRect, terrainRoot, planeMeshPrefab);
+        terrainRoot.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor(); // ?
     }
 
     public int getTheTileDepth(GameObject tile)

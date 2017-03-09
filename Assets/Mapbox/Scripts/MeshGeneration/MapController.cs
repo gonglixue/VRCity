@@ -56,17 +56,19 @@ namespace Mapbox.MeshGeneration
             }
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                // TODO 更新QuadTree，重新计算深度
-                // 。。。
+                // 更新QuadTree，重新计算深度
                 terrainControllerScript.UpDateTerrain();  // 更新QuadTree
                 // 为每一个tile重新计算深度
                 
                 foreach(KeyValuePair<Vector2, GameObject> item in Config.tilesDic)
                 {
-                    int newDepth = terrainControllerScript.getTheTileDepth(item.Value);
                     UnityTile tile_unityTile = item.Value.GetComponent<UnityTile>();
+                    int oldDepth = tile_unityTile.depth;
+                    int newDepth = terrainControllerScript.getTheTileDepth(item.Value);
                     tile_unityTile.depth = newDepth;
-                    MapVisualization.ShowTile(tile_unityTile);
+                    // TODO： 如果该tile的depth发生变化，再重新生成Mesh，否则不做处理
+                    if(oldDepth != newDepth)
+                        MapVisualization.ShowTile(tile_unityTile);
                     Debug.Log("reshow tile");
                 }
             }

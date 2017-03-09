@@ -251,11 +251,14 @@ public class CityQuadTree{
         this.LODTile = GameObject.Instantiate(planeMeshPrefab);
 
         Vector2 reference0 = BuildingGeoList.GetReferenceCenterInMeters();
-        Vector3 position = new Vector3(this.nodeCenter.x - reference0.x, 0, this.nodeCenter.y - reference0.y);
+        Vector3 position = new Vector3(this.nodeCenter.x - reference0.x, 0, this.nodeCenter.y - reference0.y);  // 墨卡托坐标下的位置
         this.LODTile.name = "depth-" + this.currentDepth;
-        this.LODTile.transform.position = position;
+        
+        
         this.LODTile.transform.localRotation = Quaternion.AngleAxis(180f, Vector3.up);
-        this.LODTile.transform.localScale = (new Vector3(1, 0, 1)) * this.nodeSize * 0.1f;
+        //this.LODTile.transform.localScale = (new Vector3(1, 0, 1)) * this.nodeSize * 0.1f;
+        this.LODTile.transform.localScale = root.transform.localScale * this.nodeSize * 0.1f;
+        this.LODTile.transform.position = position * root.transform.localScale.x;
         this.LODTile.transform.SetParent(root.transform);
         this.LODTile.AddComponent<MeshCollider>().sharedMesh = this.LODTile.GetComponent<MeshFilter>().mesh;
     }

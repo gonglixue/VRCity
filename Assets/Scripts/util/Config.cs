@@ -14,6 +14,10 @@ public static class Config{
     public static double worldFactor;
     public static int maxTreeDepth = 3;
 
+    public static Rect referenceRect;
+    public static Vector2 referenceTileMeter;   // 给定参考原点的经纬度对应的墨卡托坐标
+    public static Vector2 tms;                  // 参考原点所在tile的ID
+
     public static void setZoom(int newZoom)
     {
         zoom = newZoom;

@@ -6,6 +6,8 @@ public class CameraController : MonoBehaviour {
     public Vector4 Range;   // 决定当前tile显示范围
     public Vector3 UpMax;
     public Vector3 DownMax;
+    public double longitude = 13.3905676;
+    public double latitude = 52.5387557;
 
     public GameObject MapController;
 
@@ -19,11 +21,19 @@ public class CameraController : MonoBehaviour {
     private Vector2 _tms;
     private Rect _referenceTileRect;
 
+    private Vector2 positionMeter;  // 相机在墨卡托坐标下的位置
+    private Rect cameraRect;    // 相机墨卡托坐标Rect
+    private float RectWidth;    // 相机在墨卡托坐标下Rect的宽度
+
+
     void Awake()
     {
         _fieldOfView = GetComponent<Camera>().fieldOfView;
         _height = transform.position.y;
         InitReference();
+
+        positionMeter = Mapbox.Conversions.LatLonToMeters(latitude, longitude);
+        this.transform.position = MetersToUnity(positionMeter);
         //CalRange(_height, _fieldOfView);
     }
 
@@ -68,10 +78,23 @@ public class CameraController : MonoBehaviour {
         _referenceTileRect = Mapbox.Conversions.TileBounds(_tms, Config.zoom);
 
         _worldScaleFactor = Config.tileSize / _referenceTileRect.width;  // 墨卡托坐标转unity
+
+        RectWidth = _referenceTileRect.width;
     }
 
     void SetRange(Vector4 myRange)
     {
         MapController.GetComponent<Mapbox.MeshGeneration.MapController>().Range = myRange;
+    }
+
+    // 墨卡托坐标转unity坐标
+    Vector3 MetersToUnity(Vector2 posInMeter)
+    {
+        Vector2 referenceCenterMeter = _referenceTileRect.center;
+        Vector2 resultPos = new Vector2(posInMeter.x - referenceCenterMeter.x, posInMeter.y - referenceCenterMeter.y);
+        resultPos = resultPos * (float)_worldScaleFactor;
+
+        Vector3 posUnity = new Vector3(resultPos.x, 4, resultPos.y);
+        return posUnity;
     }
 }

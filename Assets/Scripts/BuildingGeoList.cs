@@ -210,6 +210,9 @@ public class BuildingGeoList : MonoBehaviour
         _scaleFactor = calTileScaleFactor(_north, _south, _west, _east, _referenceTileRect);
         _worldScaleFactor = Config.tileSize / _referenceTileRect.width;
         Config.worldFactor = _worldScaleFactor;
+        Config.referenceRect = _referenceTileRect;
+        Config.referenceTileMeter = _referenceTileMeter;
+        Config.tms = _tms;
         //Debug.Log("referenceTileRect width:" + _referenceTileRect.width);
         //Debug.Log("world scale factor: " + _worldScaleFactor);
     }
