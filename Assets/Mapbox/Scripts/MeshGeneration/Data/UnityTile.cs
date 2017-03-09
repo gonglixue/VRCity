@@ -14,6 +14,7 @@ namespace Mapbox.MeshGeneration.Data
         [SerializeField] private Texture2D _imageData;
         [SerializeField] private string _vectorData;
 
+
         public Texture2D ImageData
         {
             get { return _imageData; }
@@ -49,13 +50,15 @@ namespace Mapbox.MeshGeneration.Data
         public TilePropertyState ImageDataState { get; set; }
         public TilePropertyState HeightDataState { get; set; }
         public TilePropertyState VectorDataState { get; set; }
+        
         #endregion
 
         public Vector2 TileCoordinate { get; set; }
         public int Zoom { get; set; }
         public Rect Rect { get; set; }
 		public float RelativeScale { get; set;}
-        
+        public int depth;
+
         public float QueryHeightData(float x, float y)  // 参数是纹理坐标
         {
             if(HeightData != null)

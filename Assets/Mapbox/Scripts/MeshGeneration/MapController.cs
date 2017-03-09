@@ -26,11 +26,15 @@ namespace Mapbox.MeshGeneration
 		private GameObject _root;
 		private Dictionary<Vector2, UnityTile> _tiles;
 
+        public GameObject TerrainController;
+        private TerrainController terrainControllerScript;
+
 		public void Awake()
 		{
 			_fileSource = MapboxConvenience.Instance.FileSource;
 			MapVisualization.Initialize(this, _fileSource);
 			_tiles = new Dictionary<Vector2, UnityTile>();
+            terrainControllerScript = TerrainController.GetComponent<TerrainController>();
 		}
 
 		public void Start()
@@ -49,6 +53,22 @@ namespace Mapbox.MeshGeneration
                     _root.transform.position = new Vector3(0, -rayhit.point.y, 0);
                     _snapYToZero = false;
                 }                
+            }
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                // TODO 更新QuadTree，重新计算深度
+                // 。。。
+                terrainControllerScript.UpDateTerrain();  // 更新QuadTree
+                // 为每一个tile重新计算深度
+                
+                foreach(KeyValuePair<Vector2, GameObject> item in Config.tilesDic)
+                {
+                    int newDepth = terrainControllerScript.getTheTileDepth(item.Value);
+                    UnityTile tile_unityTile = item.Value.GetComponent<UnityTile>();
+                    tile_unityTile.depth = newDepth;
+                    MapVisualization.ShowTile(tile_unityTile);
+                    Debug.Log("reshow tile");
+                }
             }
         }
 
@@ -76,8 +96,8 @@ namespace Mapbox.MeshGeneration
 			ReferenceTileRect = Conversions.TileBounds(tms, zoom);  // 返回的Rect是基于墨卡托坐标. RefernceTile:指定经纬度所在的tile
             WorldScaleFactor = TileSize / ReferenceTileRect.width;  // 一片tiles在unity坐标系中的宽度/一片tiles在墨卡托坐标中的宽度，用于从墨卡托坐标scale到unity坐标
             _root.transform.localScale = Vector3.one * WorldScaleFactor;
-            Debug.Log("reference tile rect width: "+ReferenceTileRect.width);
-            Debug.Log("reference:" + (ReferenceTileRect.max.x - ReferenceTileRect.min.x));
+            Debug.Log("mapcontroller: reference tile rect width: "+ReferenceTileRect.width);
+            Debug.Log("mapcontroller: reference:" + (ReferenceTileRect.max.x - ReferenceTileRect.min.x));
 			//creating tiles on demand, we can use something like Thiago's slippy map here as well
 			for (int i = (int)(tms.x - frame.x); i <= (tms.x + frame.z); i++)
 			{
@@ -93,15 +113,21 @@ namespace Mapbox.MeshGeneration
 					tile.Rect = Conversions.TileBounds(tile.TileCoordinate, zoom);  // 墨卡托坐标
 					tile.transform.position = new Vector3(tile.Rect.center.x - ReferenceTileRect.center.x, 0, tile.Rect.center.y - ReferenceTileRect.center.y);
 					tile.transform.SetParent(_root.transform, false);
-					MapVisualization.ShowTile(tile);
+					
 
                     tileObject.AddComponent<TileIntro>().setTileInfo(new Vector2(i, j), tile.Rect, tile.Zoom, tile.RelativeScale);
                     if(i==tms.x && j==tms.y) {
                         tileObject.GetComponent<TileIntro>().setRefernceTile();
                     }
-                    tileObject.GetComponent<MeshRenderer>().enabled = false;
+
+
+                    // TODO: 每生成一个Map tile, 把它分配到Quadtree的某个叶子节点上
+                    tile.depth = terrainControllerScript.getTheTileDepth(tileObject);
+
+                    //tileObject.GetComponent<MeshRenderer>().enabled = false;
                     Config.tilesDic.Add(new Vector2(i, j), tileObject);
-				}
+                    MapVisualization.ShowTile(tile);
+                }
 			}
 
             // another zoom level

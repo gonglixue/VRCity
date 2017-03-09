@@ -37,7 +37,8 @@ namespace Mapbox.MeshGeneration.Factories
 			base.Register(tile);
 			if (_createRealTerrain)
 			{
-				_tiles.Add(tile.TileCoordinate, tile);
+                if(!_tiles.ContainsKey(tile.TileCoordinate))
+				    _tiles.Add(tile.TileCoordinate, tile);
 				Run(tile);
 			}
 			else
@@ -86,20 +87,22 @@ namespace Mapbox.MeshGeneration.Factories
 			var go = tile.gameObject;
 			var mesh = new Mesh();
 			var verts = new List<Vector3>();
+            // TODO: 根据depth来决定网格密度
+            int depth_sampleCount =(int)( sampleCount / (Mathf.Pow(2, Config.maxTreeDepth - tile.depth)) );
 
-            for (float x = 0; x < sampleCount; x++)
+            for (float x = 0; x < depth_sampleCount; x++)
 			{
-				for (float y = 0; y < sampleCount; y++)
+				for (float y = 0; y < depth_sampleCount; y++)
 				{
 					var xx = Mathf.Lerp(tile.Rect.xMin, (tile.Rect.xMin + tile.Rect.size.x),
-						x / (sampleCount - 1));
+						x / (depth_sampleCount - 1));
 					var yy = Mathf.Lerp(tile.Rect.yMin, (tile.Rect.yMin + tile.Rect.size.y),
-						y / (sampleCount - 1));
+						y / (depth_sampleCount - 1));
 					
 					verts.Add(new Vector3(
 						(xx - tile.Rect.center.x),
-						Conversions.GetRelativeHeightFromColor(texture.GetPixel((int)Mathf.Clamp((x / (sampleCount - 1) * 256), 0, 255),
-						                                                        (int)Mathf.Clamp((256 - (y / (sampleCount - 1) * 256)), 0, 255)), tile.RelativeScale),
+						Conversions.GetRelativeHeightFromColor(texture.GetPixel((int)Mathf.Clamp((x / (depth_sampleCount - 1) * 256), 0, 255),
+						                                                        (int)Mathf.Clamp((256 - (y / (depth_sampleCount - 1) * 256)), 0, 255)), tile.RelativeScale),
 						(yy - tile.Rect.center.y)));
 				}
 			}
@@ -109,26 +112,26 @@ namespace Mapbox.MeshGeneration.Factories
 			//we can read these from a hardcoded dictionary as well
 			//no need to calculate this every single time unless we need a really high range for sampleCount
 			var trilist = new List<int>();
-			for (int y = 0; y < sampleCount - 1; y++)
+			for (int y = 0; y < depth_sampleCount - 1; y++)
 			{
-				for (int x = 0; x < sampleCount - 1; x++)
+				for (int x = 0; x < depth_sampleCount - 1; x++)
 				{
-					trilist.Add((y * sampleCount) + x);
-					trilist.Add((y * sampleCount) + x + sampleCount);
-					trilist.Add((y * sampleCount) + x + sampleCount + 1);
+					trilist.Add((y * depth_sampleCount) + x);
+					trilist.Add((y * depth_sampleCount) + x + depth_sampleCount);
+					trilist.Add((y * depth_sampleCount) + x + depth_sampleCount + 1);
 
-					trilist.Add((y * sampleCount) + x);
-					trilist.Add((y * sampleCount) + x + sampleCount + 1);
-					trilist.Add((y * sampleCount) + x + 1);
+					trilist.Add((y * depth_sampleCount) + x);
+					trilist.Add((y * depth_sampleCount) + x + depth_sampleCount + 1);
+					trilist.Add((y * depth_sampleCount) + x + 1);
 				}
 			}
 			mesh.SetTriangles(trilist, 0);
 
 			var uvlist = new List<Vector2>();
-			var step = 1f / (sampleCount - 1);
-			for (int i = 0; i < sampleCount; i++)
+			var step = 1f / (depth_sampleCount - 1);
+			for (int i = 0; i < depth_sampleCount; i++)
 			{
-				for (int j = 0; j < sampleCount; j++)
+				for (int j = 0; j < depth_sampleCount; j++)
 				{
 					uvlist.Add(new Vector2(i * step, 1 - (j * step)));
 				}
@@ -136,7 +139,9 @@ namespace Mapbox.MeshGeneration.Factories
 			mesh.SetUVs(0, uvlist);
 			mesh.RecalculateNormals();
 			go.GetComponent<MeshFilter>().sharedMesh = mesh;
-			go.AddComponent<MeshCollider>();
+            if(!go.GetComponent<MeshCollider>())
+			    go.AddComponent<MeshCollider>();
+            go.GetComponent<MeshCollider>().sharedMesh = mesh;
 			//go.layer = LayerMask.NameToLayer("terrain");
 		}
 
@@ -145,14 +150,16 @@ namespace Mapbox.MeshGeneration.Factories
 		{
 			var tmesh = tile.GetComponent<MeshFilter>().mesh;
 			var left = new Vector2(tile.TileCoordinate.x - 1, tile.TileCoordinate.y);
-			if (_tiles.ContainsKey(left) && _tiles[left].HeightData != null)
+            int depth_sampleCount = (int)(sampleCount / (Mathf.Pow(2, Config.maxTreeDepth - tile.depth)));
+
+            if (_tiles.ContainsKey(left) && _tiles[left].HeightData != null)
 			{
 				var t2mesh = _tiles[left].GetComponent<MeshFilter>().mesh;
 
 				var verts = tmesh.vertices;
-				for (int i = 0; i < sampleCount; i++)
+				for (int i = 0; i < depth_sampleCount; i++)
 				{
-					verts[i].Set(verts[i].x, t2mesh.vertices[verts.Length - sampleCount + i].y, verts[i].z);
+					verts[i].Set(verts[i].x, t2mesh.vertices[verts.Length - depth_sampleCount + i].y, verts[i].z);
 				}
 				tmesh.vertices = verts;
 			}
@@ -163,10 +170,10 @@ namespace Mapbox.MeshGeneration.Factories
 				var t2mesh = _tiles[right].GetComponent<MeshFilter>().mesh;
 
 				var verts = tmesh.vertices;
-				for (int i = 0; i < sampleCount; i++)
+				for (int i = 0; i < depth_sampleCount; i++)
 				{
-					verts[verts.Length - sampleCount + i].Set(verts[verts.Length - sampleCount + i].x, t2mesh.vertices[i].y,
-						verts[verts.Length - sampleCount + i].z);
+					verts[verts.Length - depth_sampleCount + i].Set(verts[verts.Length - depth_sampleCount + i].x, t2mesh.vertices[i].y,
+						verts[verts.Length - depth_sampleCount + i].z);
 				}
 				tmesh.vertices = verts;
 			}
@@ -176,10 +183,10 @@ namespace Mapbox.MeshGeneration.Factories
 			{
 				var t2mesh = _tiles[up].GetComponent<MeshFilter>().mesh;
 				var verts = tmesh.vertices;
-				for (int i = 0; i < sampleCount; i++)
+				for (int i = 0; i < depth_sampleCount; i++)
 				{
-					verts[i * sampleCount].Set(verts[i * sampleCount].x, t2mesh.vertices[i * sampleCount + sampleCount - 1].y,
-						verts[i * sampleCount].z);
+					verts[i * depth_sampleCount].Set(verts[i * depth_sampleCount].x, t2mesh.vertices[i * depth_sampleCount + depth_sampleCount - 1].y,
+						verts[i * depth_sampleCount].z);
 				}
 				tmesh.vertices = verts;
 			}
@@ -190,10 +197,10 @@ namespace Mapbox.MeshGeneration.Factories
 				var t2mesh = _tiles[down].GetComponent<MeshFilter>().mesh;
 
 				var verts = tmesh.vertices;
-				for (int i = 0; i < sampleCount; i++)
+				for (int i = 0; i < depth_sampleCount; i++)
 				{
-					verts[i * sampleCount + sampleCount - 1].Set(verts[i * sampleCount + sampleCount - 1].x, t2mesh.vertices[i * sampleCount].y,
-						verts[i * sampleCount + sampleCount - 1].z);
+					verts[i * depth_sampleCount + depth_sampleCount - 1].Set(verts[i * depth_sampleCount + depth_sampleCount - 1].x, t2mesh.vertices[i * depth_sampleCount].y,
+						verts[i * depth_sampleCount + depth_sampleCount - 1].z);
 				}
 				tmesh.vertices = verts;
 			}

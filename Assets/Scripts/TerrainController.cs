@@ -13,17 +13,6 @@ public class TerrainController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        InitWorldRect();
-        terrainRoot = new GameObject("terrain-root");
-        terrainRoot.transform.position = new Vector3(0, 0, 0);
-        //terrainRoot.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor();
-        // 构造
-        qTree = new CityQuadTree(worldRect, 0, null);
-        //qTree.SearchTarget(Mapbox.Conversions.LatLonToMeters(Config.latitude,Config.longitude));
-        //qTree.SearchTarget(new Rect(BuildingGeoList.GetRerenceRect().x, BuildingGeoList.GetRerenceRect().y, BuildingGeoList.GetRerenceRect().width+100,BuildingGeoList.GetRerenceRect().height-100));
-        //qTree.Traversal(terrainRoot,planeMeshPrefab);
-        qTree.InitSearchTarget(new Rect(BuildingGeoList.GetRerenceRect().x, BuildingGeoList.GetRerenceRect().y, BuildingGeoList.GetRerenceRect().width + 100, BuildingGeoList.GetRerenceRect().height - 100), terrainRoot, planeMeshPrefab);
-        terrainRoot.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor();
 
     }
 	
@@ -36,6 +25,17 @@ public class TerrainController : MonoBehaviour {
         }
 	}
 
+    private void InitQuadTree()
+    {
+        InitWorldRect();
+        terrainRoot = new GameObject("terrain-root");
+        terrainRoot.transform.position = new Vector3(0, 0, 0);
+        qTree = new CityQuadTree(worldRect, 0, null);
+        qTree.InitSearchTarget(new Rect(BuildingGeoList.GetRerenceRect().x, BuildingGeoList.GetRerenceRect().y, BuildingGeoList.GetRerenceRect().width + 100, BuildingGeoList.GetRerenceRect().height - 100), terrainRoot, planeMeshPrefab);
+        terrainRoot.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor();
+
+    }
+
     void InitWorldRect()
     {
         Vector2 worldCenter = BuildingGeoList.GetRerenceLeftBottomInMeters();  // worldRect center，墨卡托坐标
@@ -46,12 +46,20 @@ public class TerrainController : MonoBehaviour {
         
     }
 
-    void UpDateTerrain()
+    public void UpDateTerrain()
     {
         GameObject terrainRoot2 = new GameObject("terrainRoot2");
-        //qTree.UpdateSearchTarget(new Rect(1487770, 6899512, 611.5f, -611.5f), terrainRoot2, planeMeshPrefab);
-        qTree.UpdateSearchTarget(new Rect(BuildingGeoList.GetRerenceRect().x, BuildingGeoList.GetRerenceRect().y, BuildingGeoList.GetRerenceRect().width + 100, BuildingGeoList.GetRerenceRect().height - 100), terrainRoot2, planeMeshPrefab);
+        qTree.UpdateSearchTarget(new Rect(1487770, 6899512, 611.5f, -611.5f), terrainRoot2, planeMeshPrefab);
+        //qTree.UpdateSearchTarget(new Rect(BuildingGeoList.GetRerenceRect().x, BuildingGeoList.GetRerenceRect().y, BuildingGeoList.GetRerenceRect().width + 100, BuildingGeoList.GetRerenceRect().height - 100), terrainRoot2, planeMeshPrefab);
         terrainRoot2.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor();
     }
 
+    public int getTheTileDepth(GameObject tile)
+    {
+        if(qTree == null)
+        {
+            InitQuadTree();
+        }
+        return qTree.AssignMapTileIntoLeaf(tile);
+    }
 }

@@ -31,7 +31,8 @@ namespace Mapbox.MeshGeneration.Factories
         public override void Register(UnityTile tile)
         {
             base.Register(tile);
-            _tiles.Add(tile.TileCoordinate, tile);
+            if(!_tiles.ContainsKey(tile.TileCoordinate))
+                _tiles.Add(tile.TileCoordinate, tile);
             Run(tile);
         }
 

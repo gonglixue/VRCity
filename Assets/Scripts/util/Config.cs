@@ -11,6 +11,9 @@ public static class Config{
     public static Vector3 myPos = new Vector3(5, 5, 5);
     public static Dictionary<Vector2, GameObject> tilesDic = new Dictionary<Vector2, GameObject>();
 
+    public static double worldFactor;
+    public static int maxTreeDepth = 3;
+
     public static void setZoom(int newZoom)
     {
         zoom = newZoom;

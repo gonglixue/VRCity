@@ -5,12 +5,14 @@ public class TileIntro : MonoBehaviour {
     public Vector2 tileID;
     public Rect tileRect;  //墨卡托坐标下的Rect
     public int zoom;
-    public bool isReferenceTile = false;
+    [SerializeField]
+    private bool isReferenceTile = false;
     public float relativeScale;
 
     public Texture2D heightData;
     public Texture2D imageData;
     public Texture2D vectorData;
+    public Vector2 CenterLatLong;
 
 	// Use this for initialization
 	void Start () {
@@ -28,6 +30,7 @@ public class TileIntro : MonoBehaviour {
         tileRect = _tileRect;
         zoom = _zoom;
         relativeScale = _relativeScale;
+        CenterLatLong = Mapbox.Conversions.TileIdToCenterLatitudeLongitude((int)_tileID.x, (int)_tileID.y, Config.zoom);
     }
 
     public void setRefernceTile()

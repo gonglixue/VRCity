@@ -25,6 +25,9 @@ public class CityQuadTree{
     public Texture2D aHeightMap;
     private GameObject LODTile;
 
+    // 每个leaf都有以下属性
+    // private List<GameObject> mapTile;
+
     //public GameObject planeMeshPrefab;
 
     // 构造函数
@@ -36,6 +39,7 @@ public class CityQuadTree{
         this.childNodes = new CityQuadTree[4];
         this.isLeaf = true;
         this.LODTile = null;
+        //this.mapTile = new List<GameObject>();
         if (parent != null)
             this.nodeParent = parent;
         // else is root
@@ -50,6 +54,7 @@ public class CityQuadTree{
         this.childNodes = new CityQuadTree[4];
         this.isLeaf = true;
         this.LODTile = null;
+        //this.mapTile = new List<GameObject>();
         if (parent != null)
             this.nodeParent = parent;
 
@@ -249,6 +254,7 @@ public class CityQuadTree{
         Vector3 position = new Vector3(this.nodeCenter.x - reference0.x, 0, this.nodeCenter.y - reference0.y);
         this.LODTile.name = "depth-" + this.currentDepth;
         this.LODTile.transform.position = position;
+        this.LODTile.transform.localRotation = Quaternion.AngleAxis(180f, Vector3.up);
         this.LODTile.transform.localScale = (new Vector3(1, 0, 1)) * this.nodeSize * 0.1f;
         this.LODTile.transform.SetParent(root.transform);
         this.LODTile.AddComponent<MeshCollider>().sharedMesh = this.LODTile.GetComponent<MeshFilter>().mesh;
@@ -287,7 +293,7 @@ public class CityQuadTree{
         {
             Vector2 tileCenter = tile.center;
             int index = (tileCenter.x < this.nodeCenter.x ? 0 : 1) + (tileCenter.y < this.nodeCenter.y ? 0 : 2);
-            this.childNodes[index].SortTileIntoLeaf(tile);
+            return this.childNodes[index].SortTileIntoLeaf(tile);
         }
         else
         {
@@ -296,8 +302,32 @@ public class CityQuadTree{
             // ...
             return this;
         }
+    }
 
-        return null;
+    public int AssignMapTileIntoLeaf(GameObject tile)
+    {
+        Rect tileRect = tile.GetComponent<TileIntro>().tileRect;
+        if(!TestRectInter(this.nodeBounds, tileRect))
+        {
+            Debug.Log("ERROR THIS QUADTREE NODE DOES NOT CONTAIN THE TILE RECT");
+            return -1;
+        }
+        else
+        {
+            if (!this.isLeaf)  // 如果当前节点不是叶子节点，就在它的子节点中继续搜索，一个tileRect只能属于一个quadtree node
+            {
+                int index = (tileRect.center.x < this.nodeCenter.x ? 0 : 1) + (tileRect.center.y < this.nodeCenter.y ? 0 : 2);
+                return this.childNodes[index].AssignMapTileIntoLeaf(tile);
+            }
+            else
+            {
+                // 分配到了叶子节点
+                //this.mapTile.Add(tile);
+                // 绘制
+                return this.currentDepth;
+            }
+        }
+
     }
 
     // Use this for initialization
