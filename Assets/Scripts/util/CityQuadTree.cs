@@ -43,7 +43,7 @@ public class CityQuadTree{
         if (parent != null)
             this.nodeParent = parent;
         // else is root
-        this.nodeBounds = new Rect(center.x - size / 2.0f, center.y - size / 2.0f, size, size);
+        this.nodeBounds = new Rect(center.x - size / 2.0f, center.y - size / 2.0f, size, size);  // 左上角 + 正height
     }
 
     public CityQuadTree(Rect worldRect, int depth, CityQuadTree parent)

@@ -43,7 +43,7 @@ public class TerrainController : MonoBehaviour {
         Vector2 worldCenter = BuildingGeoList.GetRerenceLeftBottomInMeters();  // worldRect center，墨卡托坐标
         float tileSize = BuildingGeoList.tileSizeInMeters();
         float worldRectX = worldCenter.x - tileSize * tileNum/2;
-        float worldRectY = worldCenter.y - tileSize * tileNum/2;
+        float worldRectY = worldCenter.y - tileSize * tileNum/2; // 左上角
         worldRect = new Rect(worldRectX, worldRectY, tileSize * tileNum, tileSize * tileNum);
         
     }
