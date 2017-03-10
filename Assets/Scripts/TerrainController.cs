@@ -58,7 +58,7 @@ public class TerrainController : MonoBehaviour {
 
     public void UpdateTerrain(Rect newRect)
     {
-        Debug.Log("terrain controller: update terrain");
+        //Debug.Log("terrain controller: update terrain");
         qTree.UpdateSearchTarget(newRect, terrainRoot, planeMeshPrefab);
         terrainRoot.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor(); // ?
     }

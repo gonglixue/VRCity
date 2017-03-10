@@ -55,7 +55,7 @@ public class CameraController : MonoBehaviour {
 
     void move()
     {
-        // TODO: once move, update the rect in Meters of camera
+        // once move, update the rect in Meters of camera
         float deltaX = Input.GetAxis("Horizontal") * speed;
         float deltaY = Input.GetAxis("Vertical") * speed;
         Vector3 movement = new Vector3(deltaX, 0, deltaY);
@@ -67,9 +67,18 @@ public class CameraController : MonoBehaviour {
 
         if(deltaX!=0 || deltaY != 0)
         {
-            UpdateRect(new Vector2(transform.position.x, transform.position.z));
-            MapController.GetComponent<Mapbox.MeshGeneration.MapController>().UpdateMapMesh(cameraRect);
+            // TODO: 使用协程实现防止阻塞
+            // UpdateRect(new Vector2(transform.position.x, transform.position.z));
+            // MapController.GetComponent<Mapbox.MeshGeneration.MapController>().UpdateMapMesh(cameraRect);
+            StartCoroutine(UpdateCoroutine());
         }
+    }
+
+    IEnumerator UpdateCoroutine()
+    {
+        UpdateRect(new Vector2(transform.position.x, transform.position.z));
+        MapController.GetComponent<Mapbox.MeshGeneration.MapController>().UpdateMapMesh(cameraRect);
+        yield return new WaitForSeconds(0);
     }
 
     void CalRange(float height, float viewAngle)
@@ -134,12 +143,12 @@ public class CameraController : MonoBehaviour {
         transform.position = MetersToUnity(positionMeter);                     // 相机在unity中的世界坐标
        
         // 相机的Rect width = 地图tile的Rect width
-        this.cameraRect = new Rect(positionMeter.x, positionMeter.y, RectWidth, RectWidth);     // 相机在墨卡托坐标系下的Rect
+        this.cameraRect = new Rect(positionMeter.x, positionMeter.y, RectWidth, -RectWidth);     // 相机在墨卡托坐标系下的Rect
     }
 
     void UpdateRect(Vector2 unityPosition)
     {
         Vector2 positionInMeter = UnityToMeters(this.transform.position);
-        this.cameraRect = new Rect(positionInMeter.x, positionInMeter.y, RectWidth, RectWidth);
+        this.cameraRect = new Rect(positionInMeter.x, positionInMeter.y, RectWidth, -RectWidth);
     }
 }

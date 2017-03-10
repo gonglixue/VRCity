@@ -71,7 +71,7 @@ public class CityQuadTree{
         // ------
         if(this.currentDepth >= CityQuadTree.maxDepth)
         {
-            Debug.Log("maxDepth node can not generate children");
+            //Debug.Log("maxDepth node can not generate children");
             return;
         }
 
@@ -161,7 +161,7 @@ public class CityQuadTree{
     {
         if (this.currentDepth < CityQuadTree.maxDepth)
         {
-            Debug.Log("update search target");
+            //Debug.Log("update search target");
             //this.GenerateChildNodes();
             foreach (CityQuadTree child in this.childNodes)
             {

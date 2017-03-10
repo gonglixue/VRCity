@@ -196,8 +196,12 @@ namespace Mapbox.MeshGeneration
                 tile_unityTile.depth = newDepth;
                 // TODO： 如果该tile的depth发生变化，再重新生成Mesh，否则不做处理
                 if (oldDepth != newDepth)
+                {
+                    Debug.Log("change depth from:" + oldDepth + "to" + newDepth);
                     MapVisualization.ShowTile(tile_unityTile);
-                Debug.Log("reshow tile");
+                }
+                    
+                //Debug.Log("reshow tile");
             }
         }
 
