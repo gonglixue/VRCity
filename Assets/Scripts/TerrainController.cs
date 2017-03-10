@@ -52,12 +52,13 @@ public class TerrainController : MonoBehaviour {
     {
         //GameObject terrainRoot2 = new GameObject("terrainRoot2");
         //qTree.UpdateSearchTarget(new Rect(1487770, 6899512, 611.5f, 611.5f), terrainRoot, planeMeshPrefab);
-        qTree.UpdateSearchTarget(new Rect(1487770, 6899512, 611.5f, 611.5f), terrainRoot, planeMeshPrefab);
+        qTree.UpdateSearchTarget(new Rect(1488382, 6898289, 611.5f, 611.5f), terrainRoot, planeMeshPrefab);
         //terrainRoot.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor();
     }
 
     public void UpdateTerrain(Rect newRect)
     {
+        Debug.Log("terrain controller: update terrain");
         qTree.UpdateSearchTarget(newRect, terrainRoot, planeMeshPrefab);
         terrainRoot.transform.localScale = Vector3.one * BuildingGeoList.GetWorldScaleFactor(); // ?
     }
