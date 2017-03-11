@@ -119,7 +119,7 @@ public class BuildingGeoList : MonoBehaviour
         //foreach(XmlNode place in placeMark)
         for (int j = 1; j < length; j++)
         {
-            // 每次接续读取tile中的某一个模型数据
+            // 每次循环读取tile中的某一个模型数据
             XmlNode place = placeMark[j];
 
             string name = place.SelectSingleNode(".//ns:name", nsMgr).InnerText;
@@ -188,7 +188,7 @@ public class BuildingGeoList : MonoBehaviour
             double deltay = v2.y - _referenceTileRect.center.y;
 
             // TODO：建筑物的高度位置计算， absolute in meters
-            float posYInUnity =(float)( buildingItem.altittude * _worldScaleFactor );
+            float posYInUnity =(float)( buildingItem.altitude * _worldScaleFactor );
 
             Vector3 position = new Vector3((float)(deltax * _worldScaleFactor), posYInUnity, (float)(deltay * _worldScaleFactor));
             Quaternion rotate = Quaternion.AngleAxis(-89.8f, Vector3.right) * (Quaternion.AngleAxis(180, Vector3.forward));
@@ -199,7 +199,7 @@ public class BuildingGeoList : MonoBehaviour
 
             // 为创建的GameObject添加组件
             buildingInstance.AddComponent<BuildingIntro>();  // 添加脚本
-            buildingInstance.GetComponent<BuildingIntro>().setBuildingInfo(buildingItem.name, buildingItem.latitude, buildingItem.longitude);
+            buildingInstance.GetComponent<BuildingIntro>().setBuildingInfo(buildingItem.name, buildingItem.latitude, buildingItem.longitude, buildingItem.altitude);
             buildingInstance.AddComponent<MeshCollider>().convex = true;
         }
 
@@ -267,7 +267,7 @@ public struct buildingInfo
     public double heading;
     public string name;
     public string modelHref;
-    public double altittude;
+    public double altitude;
 
     public buildingInfo(double _latitude, double _longitude, double _heading, string _name, string _href, double _altitude)
     {
@@ -276,7 +276,7 @@ public struct buildingInfo
         heading = _heading;
         name = _name;
         modelHref = _href;
-        altittude = _altitude;
+        altitude = _altitude;
     }
 }
 
