@@ -4,35 +4,35 @@
         <contributor>
             <authoring_tool>3D City Database Importer/Exporter, version 3.3.1-build1; Chair of Geoinformatics, Technical University of Munich, Germany, https://www.gis.bgu.tum.de/</authoring_tool>
         </contributor>
-        <created>2017-03-05T14:51:12.049</created>
-        <modified>2017-03-05T14:51:12.049</modified>
+        <created>2017-03-11T10:43:09.396</created>
+        <modified>2017-03-11T10:43:09.396</modified>
         <unit meter="1.0" name="meters"/>
         <up_axis>Z_UP</up_axis>
     </asset>
     <library_images>
-        <image id="textureAtlas_1105148807_0_img">
-            <init_from>textureAtlas_1105148807_0.jpeg</init_from>
+        <image id="textureAtlas_341941175_0_img">
+            <init_from>textureAtlas_341941175_0.jpeg</init_from>
         </image>
     </library_images>
     <library_materials>
-        <material id="textureAtlas_1105148807_0_mat">
-            <instance_effect url="#textureAtlas_1105148807_0_eff"/>
+        <material id="textureAtlas_341941175_0_mat">
+            <instance_effect url="#textureAtlas_341941175_0_eff"/>
         </material>
         <material id="default_ai_0.2_sh_0.2_tr_0.0_dc_r_0.8_g_0.8_b_0.8_sc_r_1.0_g_1.0_b_1.0_ec_r_0.0_g_0.0_b_0_mat">
             <instance_effect url="#default_ai_0.2_sh_0.2_tr_0.0_dc_r_0.8_g_0.8_b_0.8_sc_r_1.0_g_1.0_b_1.0_ec_r_0.0_g_0.0_b_0_eff"/>
         </material>
     </library_materials>
     <library_effects>
-        <effect id="textureAtlas_1105148807_0_eff">
+        <effect id="textureAtlas_341941175_0_eff">
             <profile_COMMON>
-                <newparam sid="textureAtlas_1105148807_0_surface">
+                <newparam sid="textureAtlas_341941175_0_surface">
                     <surface type="2D">
-                        <init_from>textureAtlas_1105148807_0_img</init_from>
+                        <init_from>textureAtlas_341941175_0_img</init_from>
                     </surface>
                 </newparam>
-                <newparam sid="textureAtlas_1105148807_0_sampler">
+                <newparam sid="textureAtlas_341941175_0_sampler">
                     <sampler2D>
-                        <source>textureAtlas_1105148807_0_surface</source>
+                        <source>textureAtlas_341941175_0_surface</source>
                     </sampler2D>
                 </newparam>
                 <technique sid="COMMON">
@@ -41,7 +41,7 @@
                             <color>0.0 0.0 0.0 1.0</color>
                         </emission>
                         <diffuse>
-                            <texture texture="textureAtlas_1105148807_0_sampler" texcoord="TEXCOORD"/>
+                            <texture texture="textureAtlas_341941175_0_sampler" texcoord="TEXCOORD"/>
                         </diffuse>
                     </lambert>
                 </technique>
@@ -97,6 +97,16 @@
                         </accessor>
                     </technique_common>
                 </source>
+                <source id="geometry0-normal">
+                    <float_array id="geometry0-normal-array" count="90">0.8566247 0.5159401 -3.46E-5 0.8566247 0.5159401 -3.45E-5 0.8566247 0.5159401 -3.46E-5 0.8566247 0.5159401 -3.46E-5 -0.5247554 0.8512532 -1.59E-5 -0.5247552 0.8512532 -1.57E-5 -0.5247553 0.8512532 -1.57E-5 -0.5247554 0.8512531 -1.6E-5 -0.5247554 0.8512531 -1.64E-5 -0.8566247 -0.5159401 3.46E-5 -0.8566247 -0.5159401 3.46E-5 -0.8566247 -0.5159401 3.46E-5 -0.8566247 -0.5159401 3.47E-5 0.5247554 -0.851253 1.58E-5 0.5247554 -0.8512531 1.58E-5 0.5247554 -0.8512531 1.57E-5 0.5247554 -0.8512531 1.58E-5 0.5247554 -0.851253 1.58E-5 0.0 0.0 -1.0 0.0 0.0 -1.0 0.0 0.0 -1.0 0.0 0.0 -1.0 0.3370362 0.2029949 0.9193474 0.3370362 0.202995 0.9193474 0.3370362 0.2029949 0.9193474 0.3370362 0.2029949 0.9193475 -0.3370277 -0.2029898 0.9193516 -0.3370277 -0.2029898 0.9193516 -0.3370277 -0.2029898 0.9193516 -0.3370277 -0.2029898 0.9193516</float_array>
+                    <technique_common>
+                        <accessor count="30" source="#geometry0-normal-array" stride="3">
+                            <param name="X" type="float"/>
+                            <param name="Y" type="float"/>
+                            <param name="Z" type="float"/>
+                        </accessor>
+                    </technique_common>
+                </source>
                 <source id="geometry0-texCoords">
                     <float_array id="geometry0-texCoords-array" count="52">3.4196484375E-4 0.68220587890625 0.02408203515625 0.43464216796875 0.2770669609375 0.75308765625 0.250109703125 0.9999161718749999 0.287522052734375 0.58189651953125 0.2776158076171875 0.4659160078125 0.3258925419921875 0.53850510546875 0.33679116894531247 0.6559638476562499 0.313897880859375 0.638453046875 0.4791347890625 0.8964728125 0.437919552734375 0.99920421875 0.277551154296875 0.75484953125 0.32201511816406253 0.65709321875 0.8390596640625 0.91973480078125 0.860730333984375 0.754566765625 0.90812241796875 0.83273130859375 0.8874269580078125 0.99951175 0.8597004873046875 0.9873803125 0.664665556640625 0.89812040625 0.65086439453125 0.9986586875 0.47972115234375 0.75761946875 0.494095654296875 0.65744109375 0.83881469140625 0.89774125 0.8352119296875 0.99958371875 0.6650446250000001 0.75984525 0.668008046875 0.65670203125</float_array>
                     <technique_common>
@@ -109,14 +119,16 @@
                 <vertices id="geometry0-vertex">
                     <input semantic="POSITION" source="#geometry0-position"/>
                 </vertices>
-                <triangles count="14" material="textureAtlas_1105148807_0_tri">
+                <triangles count="14" material="textureAtlas_341941175_0_tri">
                     <input offset="0" semantic="VERTEX" source="#geometry0-vertex"/>
-                    <input offset="1" semantic="TEXCOORD" source="#geometry0-texCoords"/>
-                    <p>8 0 4 1 5 2 8 0 5 2 9 3 4 4 8 5 7 6 4 4 7 6 1 7 4 4 1 7 0 8 6 9 2 10 1 11 6 9 1 11 7 12 2 13 6 14 9 15 2 13 9 15 5 16 2 13 5 16 3 17 4 18 0 19 3 20 4 18 3 20 5 21 0 22 1 23 2 24 0 22 2 24 3 25</p>
+                    <input offset="1" semantic="NORMAL" source="#geometry0-normal"/>
+                    <input offset="2" semantic="TEXCOORD" source="#geometry0-texCoords"/>
+                    <p>8 0 0 4 1 1 5 2 2 8 0 0 5 2 2 9 3 3 4 4 4 8 5 5 7 6 6 4 4 4 7 6 6 1 7 7 4 4 4 1 7 7 0 8 8 6 9 9 2 10 10 1 11 11 6 9 9 1 11 11 7 12 12 2 13 13 6 14 14 9 15 15 2 13 13 9 15 15 5 16 16 2 13 13 5 16 16 3 17 17 4 22 18 0 23 19 3 24 20 4 22 18 3 24 20 5 25 21 0 26 22 1 27 23 2 28 24 0 26 22 2 28 24 3 29 25</p>
                 </triangles>
                 <triangles count="2" material="default_ai_0.2_sh_0.2_tr_0.0_dc_r_0.8_g_0.8_b_0.8_sc_r_1.0_g_1.0_b_1.0_ec_r_0.0_g_0.0_b_0_tri">
                     <input offset="0" semantic="VERTEX" source="#geometry0-vertex"/>
-                    <p>6 7 8 6 8 9</p>
+                    <input offset="1" semantic="NORMAL" source="#geometry0-normal"/>
+                    <p>6 18 7 19 8 20 6 18 8 20 9 21</p>
                 </triangles>
             </mesh>
         </geometry>
@@ -128,7 +140,7 @@
                     <bind_material>
                         <technique_common>
                             <instance_material symbol="default_ai_0.2_sh_0.2_tr_0.0_dc_r_0.8_g_0.8_b_0.8_sc_r_1.0_g_1.0_b_1.0_ec_r_0.0_g_0.0_b_0_tri" target="#default_ai_0.2_sh_0.2_tr_0.0_dc_r_0.8_g_0.8_b_0.8_sc_r_1.0_g_1.0_b_1.0_ec_r_0.0_g_0.0_b_0_mat"/>
-                            <instance_material symbol="textureAtlas_1105148807_0_tri" target="#textureAtlas_1105148807_0_mat"/>
+                            <instance_material symbol="textureAtlas_341941175_0_tri" target="#textureAtlas_341941175_0_mat"/>
                         </technique_common>
                     </bind_material>
                 </instance_geometry>
