@@ -82,9 +82,10 @@ public class BuildingGeoList : MonoBehaviour
             double longitude = double.Parse(place.SelectSingleNode(".//ns:longitude", nsMgr).InnerText);
             double heading = double.Parse(place.SelectSingleNode(".//ns:heading", nsMgr).InnerText);
             string modelHref = place.SelectSingleNode(".//ns:href", nsMgr).InnerText;
+            double altitude = double.Parse(place.SelectSingleNode(".//ns:altitude", nsMgr).InnerText);
             Debug.Log(name);
 
-            buildingInfo building = new buildingInfo(latitude, longitude, heading, name, modelHref);
+            buildingInfo building = new buildingInfo(latitude, longitude, heading, name, modelHref, altitude);
             buildingsOfATile.Add(building);
         }
 
@@ -118,6 +119,7 @@ public class BuildingGeoList : MonoBehaviour
         //foreach(XmlNode place in placeMark)
         for (int j = 1; j < length; j++)
         {
+            // 每次接续读取tile中的某一个模型数据
             XmlNode place = placeMark[j];
 
             string name = place.SelectSingleNode(".//ns:name", nsMgr).InnerText;
@@ -125,9 +127,9 @@ public class BuildingGeoList : MonoBehaviour
             double longitude = double.Parse(place.SelectSingleNode(".//ns:longitude", nsMgr).InnerText);
             double heading = double.Parse(place.SelectSingleNode(".//ns:heading", nsMgr).InnerText);
             string modelHref = singleTilePathPrefix + '/' + place.SelectSingleNode(".//ns:href", nsMgr).InnerText;
-            //Debug.Log(modelHref);
+            double altitude = double.Parse(place.SelectSingleNode(".//ns:altitude", nsMgr).InnerText);
 
-            buildingInfo building = new buildingInfo(latitude, longitude, heading, name, modelHref);
+            buildingInfo building = new buildingInfo(latitude, longitude, heading, name, modelHref, altitude);
             buildingsOfATile.Add(building);
         }
 
@@ -185,7 +187,10 @@ public class BuildingGeoList : MonoBehaviour
             double deltax = v2.x - _referenceTileRect.center.x;
             double deltay = v2.y - _referenceTileRect.center.y;
 
-            Vector3 position = new Vector3((float)(deltax * _worldScaleFactor), 0, (float)(deltay * _worldScaleFactor));
+            // TODO：建筑物的高度位置计算， absolute in meters
+            float posYInUnity =(float)( buildingItem.altittude * _worldScaleFactor );
+
+            Vector3 position = new Vector3((float)(deltax * _worldScaleFactor), posYInUnity, (float)(deltay * _worldScaleFactor));
             Quaternion rotate = Quaternion.AngleAxis(-89.8f, Vector3.right) * (Quaternion.AngleAxis(180, Vector3.forward));
             string path = buildingItem.modelHref.Split('.')[0];
             path = path.Replace('\\', '/');
@@ -262,14 +267,16 @@ public struct buildingInfo
     public double heading;
     public string name;
     public string modelHref;
+    public double altittude;
 
-    public buildingInfo(double _latitude, double _longitude, double _heading, string _name, string _href)
+    public buildingInfo(double _latitude, double _longitude, double _heading, string _name, string _href, double _altitude)
     {
         latitude = _latitude;
         longitude = _longitude;
         heading = _heading;
         name = _name;
         modelHref = _href;
+        altittude = _altitude;
     }
 }
 
