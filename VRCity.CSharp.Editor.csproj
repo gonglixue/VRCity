@@ -88,26 +88,26 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>Library\UnityAssemblies\SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
-    <Reference Include="Mapbox.VectorTile.Geometry">
-      <HintPath>Assets\Mapbox\Core\Plugins\MapboxVectorTile\Mapbox.VectorTile.Geometry.dll</HintPath>
-    </Reference>
-    <Reference Include="Triangulation">
-      <HintPath>Assets\Mapbox\Core\Plugins\ThirdParty\Triangulation.dll</HintPath>
+    <Reference Include="Mapbox.Json">
+      <HintPath>Assets\Mapbox\Core\Plugins\Mapbox.Json.dll</HintPath>
     </Reference>
     <Reference Include="Mapbox.VectorTile.ExtensionMethods">
       <HintPath>Assets\Mapbox\Core\Plugins\MapboxVectorTile\Mapbox.VectorTile.ExtensionMethods.dll</HintPath>
     </Reference>
-    <Reference Include="Mapbox.Json">
-      <HintPath>Assets\Mapbox\Core\Plugins\Mapbox.Json.dll</HintPath>
+    <Reference Include="Mapbox.VectorTile.Geometry">
+      <HintPath>Assets\Mapbox\Core\Plugins\MapboxVectorTile\Mapbox.VectorTile.Geometry.dll</HintPath>
     </Reference>
     <Reference Include="Mapbox.VectorTile.PbfReader">
       <HintPath>Assets\Mapbox\Core\Plugins\MapboxVectorTile\Mapbox.VectorTile.PbfReader.dll</HintPath>
     </Reference>
+    <Reference Include="Mapbox.VectorTile.VectorTileReader">
+      <HintPath>Assets\Mapbox\Core\Plugins\MapboxVectorTile\Mapbox.VectorTile.VectorTileReader.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>Assets\Mapbox\Core\Plugins\ThirdParty\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="Mapbox.VectorTile.VectorTileReader">
-      <HintPath>Assets\Mapbox\Core\Plugins\MapboxVectorTile\Mapbox.VectorTile.VectorTileReader.dll</HintPath>
+    <Reference Include="Triangulation">
+      <HintPath>Assets\Mapbox\Core\Plugins\ThirdParty\Triangulation.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -126,6 +126,10 @@
     <None Include="Assets\Mapbox\Core\Plugins\link.xml" />
     <None Include="Assets\Mapbox\README.txt" />
     <None Include="Assets\Mapbox\Resources\Fonts\OpenSansLic.txt" />
+    <None Include="Assets\Materials\Height.shader" />
+    <None Include="Assets\Materials\VertColor.shader" />
+    <None Include="Assets\Materials\VertFrag_Diffuse.shader" />
+    <None Include="Assets\Materials\VertexModifier.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
