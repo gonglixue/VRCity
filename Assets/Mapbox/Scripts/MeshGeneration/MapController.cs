@@ -119,7 +119,9 @@ namespace Mapbox.MeshGeneration
 					
 
                     tileObject.AddComponent<TileIntro>().setTileInfo(new Vector2(i, j), tile.Rect, tile.Zoom, tile.RelativeScale);
+
                     if(i==tms.x && j==tms.y) {
+                        // 如果是参考tile
                         tileObject.GetComponent<TileIntro>().setRefernceTile();
                     }
 
@@ -132,24 +134,6 @@ namespace Mapbox.MeshGeneration
                     MapVisualization.ShowTile(tile);
                 }
 			}
-
-            // another zoom level
-            /*
-            var v2_2 = Conversions.LatLonToMeters(lat, lng);
-            var tms_2 = Conversions.MetersToTile(v2_2, zoom - 1);
-            Rect referenceRect2 = Conversions.TileBounds(tms_2, zoom - 1);
-            float worldScaleFactor2 = (TileSize / referenceRect2.width) * 2;
-            GameObject _root2 = new GameObject("worldRoog2");
-            _root2.transform.localScale = Vector3.one * worldScaleFactor2;
-            var tile2 = new GameObject("Tile-" + tms_2.x + " | " + tms_2.y).AddComponent<UnityTile>();
-            tile2.Zoom = zoom - 1;
-            tile2.RelativeScale = Conversions.GetTileScaleInMeters(0, Zoom - 1) / Conversions.GetTileScaleInMeters((float)lat, Zoom - 1);
-            tile2.TileCoordinate = new Vector2(tms_2.x, tms_2.y);
-            tile2.Rect = Conversions.TileBounds(tile2.TileCoordinate, zoom - 1);
-            tile2.transform.position = new Vector3(0, -5, 0);
-            tile2.transform.SetParent(_root2.transform, false);
-            MapVisualization.ShowTile(tile2);
-            */
         }
 
 		public void Execute(double lat, double lng, int zoom, Vector2 frame)

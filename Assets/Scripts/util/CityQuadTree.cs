@@ -228,7 +228,7 @@ public class CityQuadTree{
         }
         else
         {
-            this.CreateMesh(root, planeMeshPrefab);
+            //this.CreateMesh(root, planeMeshPrefab);
         }
     }
 
@@ -248,6 +248,7 @@ public class CityQuadTree{
 
     private void AddLODTile(GameObject root, GameObject planeMeshPrefab)
     {
+        /*
         this.LODTile = GameObject.Instantiate(planeMeshPrefab);
 
         Vector2 reference0 = BuildingGeoList.GetReferenceCenterInMeters();
@@ -261,6 +262,7 @@ public class CityQuadTree{
         this.LODTile.transform.position = position * root.transform.localScale.x;
         this.LODTile.transform.SetParent(root.transform);
         this.LODTile.AddComponent<MeshCollider>().sharedMesh = this.LODTile.GetComponent<MeshFilter>().mesh;
+        */
     }
 
     private void DestroyGameObject()

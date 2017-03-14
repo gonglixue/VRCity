@@ -98,12 +98,15 @@ namespace Mapbox.MeshGeneration.Factories
 						x / (depth_sampleCount - 1));
 					var yy = Mathf.Lerp(tile.Rect.yMin, (tile.Rect.yMin + tile.Rect.size.y),
 						y / (depth_sampleCount - 1));
-					
+
+                    /*
 					verts.Add(new Vector3(
 						(xx - tile.Rect.center.x),
 						Conversions.GetRelativeHeightFromColor(texture.GetPixel((int)Mathf.Clamp((x / (depth_sampleCount - 1) * 256), 0, 255),
 						                                                        (int)Mathf.Clamp((256 - (y / (depth_sampleCount - 1) * 256)), 0, 255)), tile.RelativeScale),
 						(yy - tile.Rect.center.y)));
+                        */
+                    verts.Add(new Vector3(xx - tile.Rect.center.x, 0, yy - tile.Rect.center.y));
 				}
 			}
 
@@ -142,7 +145,10 @@ namespace Mapbox.MeshGeneration.Factories
             if(!go.GetComponent<MeshCollider>())
 			    go.AddComponent<MeshCollider>();
             go.GetComponent<MeshCollider>().sharedMesh = mesh;
-			//go.layer = LayerMask.NameToLayer("terrain");
+            //go.layer = LayerMask.NameToLayer("terrain");
+
+            // TODO: go是gameObject，go生成设置shader参数，生成Shader
+            // go.GetComponent<TileIntro>().setShader();
 		}
 
 		//BRNKHY there has to be a better way to do this

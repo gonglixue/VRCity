@@ -60,8 +60,13 @@ namespace Mapbox.MeshGeneration.Factories
                     tile.ImageData = new Texture2D(256, 256, TextureFormat.RGB24, false);
                     tile.ImageData.wrapMode = TextureWrapMode.Clamp;
                     tile.ImageData.LoadImage(rasterTile.Data);
+
                     rend.material.mainTexture = tile.ImageData;
+                    rend.material.SetFloat("_RelativeScale", tile.RelativeScale);
+                    rend.material.SetTexture("_HeightMap", tile.HeightData);
+
                     tile.ImageDataState = TilePropertyState.Loaded;
+
 
                 }));
             }

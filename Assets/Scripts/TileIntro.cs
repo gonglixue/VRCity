@@ -14,10 +14,22 @@ public class TileIntro : MonoBehaviour {
     public Texture2D vectorData;
     public Vector2 CenterLatLong;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
+    #region ShaderVariables
+    public Shader curShader;
+    private Material material;
+    #endregion
+
+
+    void Awake()
+    {
+        
+        
+        
+    }
+    // Use this for initialization
+    void Start () {
+        Shader curShader = Shader.Find("Custom/VertexModifier");
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -36,5 +48,22 @@ public class TileIntro : MonoBehaviour {
     public void setRefernceTile()
     {
         isReferenceTile = true;
+    }
+
+    public void setShader()
+    {
+        //material = this.GetComponent<MeshRenderer>().material;
+        //material.shader = curShader;
+        //GameObject materialReference = GameObject.Find("HeightModifierShader");
+        //material = this.GetComponent<MeshRenderer>().material = materialReference.GetComponent<MeshRenderer>().material;
+        //if(curShader != null)
+        //{
+        material = this.GetComponent<MeshRenderer>().material;
+        
+            Debug.Log("set shader");
+            material.SetFloat("_RelativeScale", relativeScale);
+            material.SetTexture("_MainTex", imageData);
+            material.SetTexture("_HeightMap", heightData);
+        //}
     }
 }
