@@ -29,7 +29,7 @@ public class BuildingGeoList : MonoBehaviour
 
     #region atalas
     public Shader buildingShader;
-
+    public bool useAtlas = false;
     #endregion
 
 
@@ -185,7 +185,7 @@ public class BuildingGeoList : MonoBehaviour
     void drawATile(List<buildingInfo> buildingsOfAtile)
     {
         GameObject tile = new GameObject("Tile-" + _tileCount);
-        Material tileMaterial = new Material(buildingShader);
+        Material buildingMaterial = new Material(buildingShader);
         Texture2D[] atlasTexture = new Texture2D[buildingsOfAtile.Count];
         Rect[] rects = new Rect[buildingsOfAtile.Count];
 
@@ -223,13 +223,33 @@ public class BuildingGeoList : MonoBehaviour
         }
 
         // TODO：生成atlas
-        // 需要修改Texture import setting!!!
-        Texture2D atlas = new Texture2D(512, 512);
-        rects = atlas.PackTextures(atlasTexture, 0, 512, false);
+        if (useAtlas)
+        {       
+            // 需要修改Texture import setting!!!
+            Texture2D atlas = new Texture2D(512, 512);
+            rects = atlas.PackTextures(atlasTexture, 0, 512, false);
 
-        // TODO: 材质合并
-        // ...
-        // 遍历该tile下的每个building，重新设置他们的material；
+            // TODO: 材质合并
+            // 遍历该tile下的每个building，重新设置他们的material；
+        
+            int j = 0;
+            foreach(Transform childTransform in tile.transform)
+            {
+                childTransform.GetComponent<MeshRenderer>().materials = new Material[1];
+
+                childTransform.GetComponent<MeshRenderer>().sharedMaterial = buildingMaterial;
+                Material m = childTransform.GetComponent<MeshRenderer>().material;
+            
+                Rect r = rects[j];
+                Debug.Log(m.name);
+                m.mainTexture = atlas;
+                m.SetTexture("_MainTex", atlas);
+                m.SetTextureOffset("_MainTex", new Vector2(r.x, r.y));
+                m.SetTextureScale("_MainTex", new Vector2(r.width, r.height));
+
+                j++;
+            }
+        }
 
         _tileCount++;
     }
