@@ -9,9 +9,11 @@ public class BuildingGeoList : MonoBehaviour
     public List<TileInfo> tileList = new List<TileInfo>();
 
     // 参考原点tile
+    #region referenceTile
     static private Vector2 _referenceTileMeter;
     static private Vector2 _tms;
     static private Rect _referenceTileRect;
+    #endregion
 
     // temp
     private double _north = 52.542316087433;  // lat
@@ -24,6 +26,12 @@ public class BuildingGeoList : MonoBehaviour
 
     private GameObject _root;           // 建筑物组父元素
     private int _tileCount = 0;
+
+    #region atalas
+    public Shader buildingShader;
+
+    #endregion
+
 
     void Awake()
     {
@@ -177,9 +185,14 @@ public class BuildingGeoList : MonoBehaviour
     void drawATile(List<buildingInfo> buildingsOfAtile)
     {
         GameObject tile = new GameObject("Tile-" + _tileCount);
+        Material tileMaterial = new Material(buildingShader);
+        Texture2D[] atlasTexture = new Texture2D[buildingsOfAtile.Count];
+        Rect[] rects = new Rect[buildingsOfAtile.Count];
+
         tile.transform.localScale = _root.transform.localScale;  // !!!
         tile.transform.SetParent(_root.transform);
 
+        int i = 0;
         foreach(buildingInfo buildingItem in buildingsOfAtile)
         {
             Vector2 v2 = Mapbox.Conversions.LatLonToMeters(buildingItem.latitude, buildingItem.longitude);
@@ -201,7 +214,22 @@ public class BuildingGeoList : MonoBehaviour
             buildingInstance.AddComponent<BuildingIntro>();  // 添加脚本
             buildingInstance.GetComponent<BuildingIntro>().setBuildingInfo(buildingItem.name, buildingItem.latitude, buildingItem.longitude, buildingItem.altitude);
             buildingInstance.AddComponent<MeshCollider>().convex = true;
+
+            // TODO
+            // 获取buildingInstance的texture
+            Texture2D singleTexture = (Texture2D)buildingInstance.GetComponent<MeshRenderer>().material.GetTexture("_MainTex");
+            atlasTexture[i] = singleTexture;
+            i++;
         }
+
+        // TODO：生成atlas
+        // 需要修改Texture import setting!!!
+        Texture2D atlas = new Texture2D(512, 512);
+        rects = atlas.PackTextures(atlasTexture, 0, 512, false);
+
+        // TODO: 材质合并
+        // ...
+        // 遍历该tile下的每个building，重新设置他们的material；
 
         _tileCount++;
     }
