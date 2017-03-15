@@ -142,9 +142,11 @@ namespace Mapbox.MeshGeneration.Factories
 			mesh.SetUVs(0, uvlist);
 			mesh.RecalculateNormals();
 			go.GetComponent<MeshFilter>().sharedMesh = mesh;
+            /*
             if(!go.GetComponent<MeshCollider>())
 			    go.AddComponent<MeshCollider>();
             go.GetComponent<MeshCollider>().sharedMesh = mesh;
+            */
             //go.layer = LayerMask.NameToLayer("terrain");
 
             // TODO: go是gameObject，go生成设置shader参数，生成Shader
